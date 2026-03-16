@@ -7,7 +7,9 @@ public class Project
 
     // Foreign Keys
     public int ProjectTypeId { get; set; }
+    public int TeamId { get; set; }
 
     // Navigation properties
     public ProjectType? ProjectType { get; set; }
+    public Team? Team { get; set; }
 }
