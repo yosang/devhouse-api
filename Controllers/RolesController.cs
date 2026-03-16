@@ -4,11 +4,11 @@ using devhouse.Models;
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
-public class RoleController : ControllerBase
+public class RolesController : ControllerBase
 {
     public RoleService _service { get; set; }
 
-    public RoleController(RoleService service) => _service = service;
+    public RolesController(RoleService service) => _service = service;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Role>>> Get(

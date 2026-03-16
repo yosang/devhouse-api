@@ -12,7 +12,6 @@ public static class ServicesConfig
                 .AddScoped<ProjectService>()
                 .AddScoped<RoleService>()
                 .AddScoped<TeamService>();
-        // More services...
 
         return services;
     }

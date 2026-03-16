@@ -1,5 +1,4 @@
 using devhouse.Extensions;
-using devhouse.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

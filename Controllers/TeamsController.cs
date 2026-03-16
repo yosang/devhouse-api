@@ -5,11 +5,11 @@ using devhouse.Services;
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
-public class TeamController : ControllerBase
+public class TeamsController : ControllerBase
 {
     public TeamService _service { get; set; }
 
-    public TeamController(TeamService service) => _service = service;
+    public TeamsController(TeamService service) => _service = service;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Team>>> Get(

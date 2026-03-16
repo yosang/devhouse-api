@@ -1,18 +1,19 @@
+using Microsoft.AspNetCore.Mvc;
 using devhouse.Services;
 using devhouse.Models;
-using Microsoft.AspNetCore.Mvc;
+
 
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
-public class ProjectController : ControllerBase
+public class DevelopersController : ControllerBase
 {
-    public ProjectService _service { get; set; }
+    public DeveloperService _service { get; set; }
 
-    public ProjectController(ProjectService service) => _service = service;
+    public DevelopersController(DeveloperService service) => _service = service;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Project>>> Get(
+    public async Task<ActionResult<IEnumerable<Developer>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
         => await _service.GetAll(page, pageSize);
