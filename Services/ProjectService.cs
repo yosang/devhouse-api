@@ -14,12 +14,19 @@ public class ProjectService
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
-        _ = _ctx.Projects ?? throw new InvalidOperationException("Database context is malconfigured");
-
         return await _ctx.Projects.AsNoTracking()
                             .OrderBy(p => p.Id)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .ToListAsync();
     }
+
+    public async Task<Project> GetOne(int id) => await _ctx.Projects.Where(p => p.Id == id).FirstOrDefaultAsync() ?? null!;
+
+    // public async Task<Project> Create(int id, Project payload)
+    // {
+
+    // }
+
+
 }

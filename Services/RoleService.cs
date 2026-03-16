@@ -11,7 +11,6 @@ public class RoleService
     public async Task<List<Role>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
-        _ = _ctx.Roles ?? throw new InvalidOperationException("Database context is malconfigured");
 
         return await _ctx.Roles.AsNoTracking()
                                 .OrderBy(r => r.Id)
@@ -19,4 +18,6 @@ public class RoleService
                                 .Take(pageSize)
                                 .ToListAsync();
     }
+
+    public async Task<Role> GetOne(int id) => await _ctx.Roles.Where(r => r.Id == id).FirstOrDefaultAsync() ?? null!;
 }

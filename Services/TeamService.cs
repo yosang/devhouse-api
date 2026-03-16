@@ -14,7 +14,6 @@ public class TeamService
     public async Task<List<Team>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
-        _ = _ctx.Teams ?? throw new InvalidOperationException("Database context is malconfigured");
 
         return await _ctx.Teams.AsNoTracking()
                                 .OrderBy(r => r.Id)
@@ -22,4 +21,6 @@ public class TeamService
                                 .Take(pageSize)
                                 .ToListAsync();
     }
+
+    public async Task<Team> GetOne(int id) => await _ctx.Teams.Where(t => t.Id == id).FirstOrDefaultAsync() ?? null!;
 }
