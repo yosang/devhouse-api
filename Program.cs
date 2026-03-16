@@ -4,11 +4,7 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-
-app.UseHttpsRedirection();
-
-
-app.MapGet("/weatherforecast", () => "Hello world");
+app.MapGet("/", () => "Hello world");
 
 app.Run();
 
