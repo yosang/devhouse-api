@@ -1,4 +1,4 @@
-using devhouse.Models;
+namespace devhouse.Models;
 
 public class Team
 {

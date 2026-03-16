@@ -52,5 +52,44 @@ public class DatabaseContext : DbContext
                         .WithMany(d => d.Developers)
                         .HasForeignKey(fk => fk.RoleId)
                         .OnDelete(DeleteBehavior.NoAction);
+
+                // Seeds
+
+                // Project Types
+                mb.Entity<ProjectType>().HasData(
+                    new ProjectType { Id = 1, Name = "Web Application" },
+                    new ProjectType { Id = 2, Name = "Mobile App" },
+                    new ProjectType { Id = 3, Name = "API Service" }
+                );
+
+                // Roles
+                mb.Entity<Role>().HasData(
+                    new Role { Id = 1, Name = "Frontend Developer" },
+                    new Role { Id = 2, Name = "Backend Developer" },
+                    new Role { Id = 3, Name = "Fullstack Developer" },
+                    new Role { Id = 4, Name = "Team Lead" }
+                );
+
+                // Teams
+                mb.Entity<Team>().HasData(
+                    new Team { Id = 1, Name = "Platform Team" },
+                    new Team { Id = 2, Name = "Mobile Team" },
+                    new Team { Id = 3, Name = "API Team" }
+                );
+
+                // Developers
+                mb.Entity<Developer>().HasData(
+                    new Developer { Id = 1, Firstname = "Alice", Lastname = "Johnson", TeamId = 1, RoleId = 3 },
+                    new Developer { Id = 2, Firstname = "Bob", Lastname = "Smith", TeamId = 1, RoleId = 1 },
+                    new Developer { Id = 3, Firstname = "Charlie", Lastname = "Brown", TeamId = 2, RoleId = 2 },
+                    new Developer { Id = 4, Firstname = "Diana", Lastname = "Clark", TeamId = 3, RoleId = 4 }
+                );
+
+                // Projects
+                mb.Entity<Project>().HasData(
+                    new Project { Id = 1, Name = "DevHouse Website", ProjectTypeId = 1, TeamId = 1 },
+                    new Project { Id = 2, Name = "DevHouse Mobile", ProjectTypeId = 2, TeamId = 2 },
+                    new Project { Id = 3, Name = "DevHouse API", ProjectTypeId = 3, TeamId = 3 }
+                );
         }
 }

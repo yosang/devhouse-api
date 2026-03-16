@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace devhouse.Models;
 
 public class Project
@@ -11,5 +13,7 @@ public class Project
 
     // Navigation properties
     public ProjectType? ProjectType { get; set; }
+
+    [JsonIgnore]
     public Team? Team { get; set; }
 }

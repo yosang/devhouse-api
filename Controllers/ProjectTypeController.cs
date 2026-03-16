@@ -1,7 +1,6 @@
-using devhouse.Context;
+using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -9,20 +8,17 @@ using Microsoft.EntityFrameworkCore;
 public class ProjectTypeController : ControllerBase
 {
 
-    public DatabaseContext _ctx { get; set; }
+    public ProjectTypeService _service { get; set; }
 
-    public ProjectTypeController(DatabaseContext context) => _ctx = context;
+    public ProjectTypeController(ProjectTypeService service) => _service = service;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProjectType>>> Get(int page = 1, int pageSize = 5)
-    {
-        _ = _ctx.ProjectTypes ?? throw new InvalidOperationException("Database context is malconfigured");
+    public async Task<ActionResult<IEnumerable<ProjectType>>> Get(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5)
+        => await _service.GetAll(page, pageSize);
 
-        return await _ctx.ProjectTypes.OrderBy(pt => pt.Id)
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
-    }
+
     // [HttpGet("{id}")]
     // [HttpPost]
     // [HttpPut]

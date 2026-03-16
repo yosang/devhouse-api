@@ -1,26 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using devhouse.Context;
-using Microsoft.EntityFrameworkCore;
+using devhouse.Models;
 
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
 public class RoleController : ControllerBase
 {
-    public DatabaseContext _ctx { get; set; }
+    public RoleService _service { get; set; }
 
-    public RoleController(DatabaseContext context) => _ctx = context;
+    public RoleController(RoleService service) => _service = service;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Role>>> Get(int page = 1, int pageSize = 5)
-    {
-        _ = _ctx.Roles ?? throw new InvalidOperationException("Database context is malconfigured");
-
-        return await _ctx.Roles.OrderBy(t => t.Id)
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
-    }
+    public async Task<ActionResult<IEnumerable<Role>>> Get(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5)
+            => await _service.GetAll(page, pageSize);
 
     // [HttpGet("{id}")]
     // [HttpPost]

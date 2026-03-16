@@ -1,27 +1,21 @@
-using devhouse.Context;
+using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
 public class ProjectController : ControllerBase
 {
-    public DatabaseContext _ctx { get; set; }
+    public ProjectService _service { get; set; }
 
-    public ProjectController(DatabaseContext context) => _ctx = context;
+    public ProjectController(ProjectService service) => _service = service;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Project>>> Get(int page = 1, int pageSize = 5)
-    {
-        _ = _ctx.Projects ?? throw new InvalidOperationException("Database context is malconfigured");
-
-        return await _ctx.Projects.OrderBy(p => p.Id)
-                                    .Skip((page - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToListAsync();
-    }
+    public async Task<ActionResult<IEnumerable<Project>>> Get(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5)
+        => await _service.GetAll(page, pageSize);
 
     // [HttpGet("{id}")]
     // [HttpPost]

@@ -1,3 +1,5 @@
+namespace devhouse.Models;
+
 public class Developer
 {
     public int Id { get; set; }
