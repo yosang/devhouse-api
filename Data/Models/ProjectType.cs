@@ -6,5 +6,5 @@ public class ProjectType
     public string? Name { get; set; }
 
     // Navigation properties
-    public IEnumerable<Project>? Projects { get; set; }
+    public virtual IEnumerable<Project>? Projects { get; set; }
 }

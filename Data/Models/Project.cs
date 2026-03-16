@@ -9,4 +9,5 @@ public class Project
     public int ProjectTypeId { get; set; }
 
     // Navigation properties
+    public ProjectType? ProjectType { get; set; }
 }
