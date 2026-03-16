@@ -23,10 +23,22 @@ public class ProjectService
 
     public async Task<Project> GetOne(int id) => await _ctx.Projects.Where(p => p.Id == id).FirstOrDefaultAsync() ?? null!;
 
-    // public async Task<Project> Create(int id, Project payload)
-    // {
+    public async Task<Project> Create(Project project)
+    {
+        _ctx.Projects.Add(project);
+        await _ctx.SaveChangesAsync();
+        return project;
+    }
 
-    // }
+    public async Task<bool> Update(int id, Project project)
+    {
+        // To be implemented
+        return true;
+    }
 
-
+    public async Task<bool> Delete(int id)
+    {
+        // To be implemented
+        return true;
+    }
 }

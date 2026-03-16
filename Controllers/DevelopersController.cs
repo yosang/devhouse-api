@@ -17,7 +17,7 @@ public class DevelopersController : ControllerBase
     /// <param name="pageSize"></param>
     /// <reponse code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(Developer), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Developer>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Developer>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
@@ -37,7 +37,17 @@ public class DevelopersController : ControllerBase
         return dev;
     }
 
-    // [HttpPost]
+
+    /// <summary>Create a new developer</summary>
+    /// <param name="developer"></param>
+    /// <response code="201">Resource created</response>
+    [HttpPost]
+    [ProducesResponseType(typeof(Developer), StatusCodes.Status201Created)]
+    public async Task<ActionResult<Developer>> Create(Developer developer)
+    {
+        var newDev = await _service.Create(developer);
+        return CreatedAtAction(nameof(Get), new { id = newDev.Id }, newDev);
+    }
     // [HttpPut]
     // [HttpDelete]
 }

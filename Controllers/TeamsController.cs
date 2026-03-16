@@ -16,7 +16,7 @@ public class TeamsController : ControllerBase
     /// <param name="pageSize"></param>
     /// <reponse code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(Team), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Team>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Team>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
@@ -36,7 +36,17 @@ public class TeamsController : ControllerBase
         return team;
     }
 
-    // [HttpPost]
+    /// <summary>Create a new team</summary>
+    /// <param name="team"></param>
+    /// <response code="201">Resource created</response>
+    [HttpPost]
+    [ProducesResponseType(typeof(Team), StatusCodes.Status201Created)]
+    public async Task<ActionResult<Team>> Create(Team team)
+    {
+        var newTeam = await _service.Create(team);
+        return CreatedAtAction(nameof(Get), new { id = newTeam.Id }, newTeam);
+    }
+
     // [HttpPut]
     // [HttpDelete]
 }

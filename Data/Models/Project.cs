@@ -5,6 +5,7 @@ namespace devhouse.Models;
 public class Project
 {
     public int Id { get; set; }
+
     public string? Name { get; set; }
 
     // Foreign Keys
@@ -12,6 +13,7 @@ public class Project
     public int TeamId { get; set; }
 
     // Navigation properties
+    [JsonIgnore]
     public ProjectType? ProjectType { get; set; }
 
     [JsonIgnore]

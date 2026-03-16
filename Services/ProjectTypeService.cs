@@ -21,4 +21,23 @@ public class ProjectTypeService
     }
 
     public async Task<ProjectType> GetOne(int id) => await _ctx.ProjectTypes.Where(pt => pt.Id == id).FirstOrDefaultAsync() ?? null!;
+
+    public async Task<ProjectType> Create(ProjectType pt)
+    {
+        _ctx.ProjectTypes.Add(pt);
+        await _ctx.SaveChangesAsync();
+        return pt;
+    }
+
+    public async Task<bool> Update(int id, ProjectType pt)
+    {
+        // To be implemented
+        return true;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        // To be implemented
+        return true;
+    }
 }

@@ -16,7 +16,7 @@ public class ProjectsController : ControllerBase
     /// <param name="pageSize"></param>
     /// <reponse code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Project>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
@@ -36,7 +36,16 @@ public class ProjectsController : ControllerBase
         return proj;
     }
 
-    // [HttpPost]
+    /// <summary>Create a new project</summary>
+    /// <param name="project"></param>
+    /// <response code="201">Resource created</response>
+    [HttpPost]
+    [ProducesResponseType(typeof(Project), StatusCodes.Status201Created)]
+    public async Task<ActionResult<Project>> Create(Project project)
+    {
+        var newProject = await _service.Create(project);
+        return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
+    }
     // [HttpPut]
     // [HttpDelete]
 }

@@ -23,4 +23,23 @@ public class TeamService
     }
 
     public async Task<Team> GetOne(int id) => await _ctx.Teams.Where(t => t.Id == id).FirstOrDefaultAsync() ?? null!;
+
+    public async Task<Team> Create(Team team)
+    {
+        _ctx.Teams.Add(team);
+        await _ctx.SaveChangesAsync();
+        return team;
+    }
+
+    public async Task<bool> Update(int id, Team team)
+    {
+        // To be implemented
+        return true;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        // To be implemented
+        return true;
+    }
 }

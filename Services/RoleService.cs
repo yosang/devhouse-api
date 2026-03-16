@@ -20,4 +20,23 @@ public class RoleService
     }
 
     public async Task<Role> GetOne(int id) => await _ctx.Roles.Where(r => r.Id == id).FirstOrDefaultAsync() ?? null!;
+
+    public async Task<Role> Create(Role role)
+    {
+        _ctx.Roles.Add(role);
+        await _ctx.SaveChangesAsync();
+        return role;
+    }
+
+    public async Task<bool> Update(int id, Role role)
+    {
+        // To be implemented
+        return true;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        // To be implemented
+        return true;
+    }
 }

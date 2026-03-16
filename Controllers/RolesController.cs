@@ -15,7 +15,7 @@ public class RolesController : ControllerBase
     /// <param name="pageSize"></param>
     /// <reponse code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(Role), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Role>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Role>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
@@ -35,7 +35,17 @@ public class RolesController : ControllerBase
         return role;
     }
 
-    // [HttpPost]
+    /// <summary>Create a new role</summary>
+    /// <param name="role"></param>
+    /// <response code="201">Resource created</response>
+    [HttpPost]
+    [ProducesResponseType(typeof(Role), StatusCodes.Status201Created)]
+    public async Task<ActionResult<Role>> Create(Role role)
+    {
+        var newRole = await _service.Create(role);
+        return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
+    }
+
     // [HttpPut]
     // [HttpDelete]
 }
