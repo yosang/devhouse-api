@@ -50,13 +50,23 @@ public class TeamsController : ControllerBase
     /// <summary>Update a team</summary>
     /// <param name="team"></param>
     /// <response code="204">Update successful, no content returned</response>
+    /// <response code="404">Resource not found by id</response>
+    /// <response code="400">Route path Id and Request body Id mismatch</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, Team team)
     {
         var (notFound, badRequest) = await _service.Update(id, team);
         if (notFound) return NotFound();
-        if (badRequest) return BadRequest(); // Provide a better response message with new Problem or use swagger documentation
+        if (badRequest) return BadRequest(new ProblemDetails()
+        {
+            Title = "Id mismatch",
+            Detail = $"There is a mismatch in the route path ({id}) Id and Request body Id ({team.Id})",
+            Status = StatusCodes.Status400BadRequest,
+            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
+        });
 
         return NoContent();
     }
