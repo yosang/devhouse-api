@@ -3,7 +3,7 @@ using devhouse.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatatabaseConfig(builder.Configuration)
-                .AddSwaggerGen()
+                .AddSwaggerConfig()
                 .AddServices()
                 .AddControllers();
 
@@ -11,7 +11,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello world");
 
-app.UseSwagger().UseSwaggerUI();
+app.UseSwaggerMiddlewares();
 
 app.MapControllers();
 
