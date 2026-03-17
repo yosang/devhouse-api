@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using devhouse.Models;
 using devhouse.Services;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -40,6 +41,7 @@ public class TeamsController : ControllerBase
     /// <param name="team"></param>
     /// <response code="201">Resource created</response>
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(Team), StatusCodes.Status201Created)]
     public async Task<ActionResult<Team>> Create(Team team)
     {
@@ -57,6 +59,7 @@ public class TeamsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<ActionResult> Update(int id, Team team)
     {
         var (notFound, badRequest) = await _service.Update(id, team);
@@ -77,6 +80,7 @@ public class TeamsController : ControllerBase
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)

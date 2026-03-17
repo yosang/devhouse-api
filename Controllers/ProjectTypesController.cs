@@ -1,6 +1,7 @@
 using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -41,6 +42,7 @@ public class ProjectTypesController : ControllerBase
     /// <param name="pt"></param>
     /// <response code="201">Resource created</response>
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(ProjectType), StatusCodes.Status201Created)]
     public async Task<ActionResult<ProjectType>> Create(ProjectType pt)
     {
@@ -58,6 +60,7 @@ public class ProjectTypesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<ActionResult> Update(int id, ProjectType projecttype)
     {
         var (notFound, badRequest) = await _service.Update(id, projecttype);
@@ -78,6 +81,7 @@ public class ProjectTypesController : ControllerBase
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)

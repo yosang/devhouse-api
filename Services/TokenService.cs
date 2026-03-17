@@ -19,12 +19,9 @@ public class TokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, name),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString())
         },
         expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
         signingCredentials: new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey)),
-            SecurityAlgorithms.HmacSha256
-        )
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey)), SecurityAlgorithms.HmacSha256)
     ));
 }

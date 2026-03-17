@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using devhouse.Models;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -39,6 +40,7 @@ public class RolesController : ControllerBase
     /// <param name="role"></param>
     /// <response code="201">Resource created</response>
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(Role), StatusCodes.Status201Created)]
     public async Task<ActionResult<Role>> Create(Role role)
     {
@@ -56,6 +58,7 @@ public class RolesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<ActionResult> Update(int id, Role role)
     {
         var (notFound, badRequest) = await _service.Update(id, role);
@@ -76,6 +79,7 @@ public class RolesController : ControllerBase
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
