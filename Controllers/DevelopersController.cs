@@ -48,6 +48,20 @@ public class DevelopersController : ControllerBase
         var newDev = await _service.Create(developer);
         return CreatedAtAction(nameof(Get), new { id = newDev.Id }, newDev);
     }
-    // [HttpPut]
+
+    /// <summary>Update a developer</summary>
+    /// <param name="developer"></param>
+    /// <response code="204">Update successful, no content returned</response>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Developer>> Update(int id, Developer developer)
+    {
+        var success = await _service.Update(id, developer);
+        if (!success) return NotFound();
+
+        return NoContent();
+    }
+
     // [HttpDelete]
 }

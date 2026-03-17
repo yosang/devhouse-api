@@ -32,7 +32,17 @@ public class DeveloperService
 
     public async Task<bool> Update(int id, Developer developer)
     {
-        // To be implemented
+        if (id != developer.Id) return false;
+
+        var dev = await _ctx.Developers.FindAsync(id);
+        if (dev == null) return false;
+
+        dev.Firstname = developer.Firstname;
+        dev.Lastname = developer.Lastname;
+        dev.RoleId = developer.RoleId;
+        dev.TeamId = developer.TeamId;
+
+        await _ctx.SaveChangesAsync();
         return true;
     }
 
