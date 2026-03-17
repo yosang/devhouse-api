@@ -42,9 +42,14 @@ public class ProjectTypeService
         return (false, false);
     }
 
-    // public async Task<bool> Delete(int id)
-    // {
-    //     // To be implemented
-    //     return true;
-    // }
+    public async Task<bool> Delete(int id)
+    {
+        var entity = await _ctx.ProjectTypes.FindAsync(id);
+        if (entity == null) return false;
+
+        _ctx.Remove(entity);
+
+        await _ctx.SaveChangesAsync();
+        return true;
+    }
 }

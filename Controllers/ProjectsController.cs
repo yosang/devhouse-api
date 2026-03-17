@@ -71,5 +71,18 @@ public class ProjectsController : ControllerBase
         return NoContent();
     }
 
-    // [HttpDelete]
+    /// <summary>Deletes a project</summary>
+    /// <param name="id"></param>
+    /// <response code="204">Deletion successful, no content returned</response>
+    /// <response code="404">Resource not found by id</response>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Remove(int id)
+    {
+        var success = await _service.Delete(id);
+        if (!success) return NotFound();
+
+        return NoContent();
+    }
 }
