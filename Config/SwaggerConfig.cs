@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 namespace devhouse.Extensions;
@@ -18,7 +19,7 @@ public static class SwaggerConfig
             });
 
 
-            // options.IncludeXmlComments()
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
         }
 
         );

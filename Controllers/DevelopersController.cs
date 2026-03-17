@@ -15,7 +15,7 @@ public class DevelopersController : ControllerBase
     /// <summary> Retrieve a list of developers </summary>
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
-    /// <reponse code="200">All resources retrieved</response>
+    /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Developer>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Developer>>> Get(
@@ -50,6 +50,7 @@ public class DevelopersController : ControllerBase
     }
 
     /// <summary>Update a developer</summary>
+    /// <param name="id"></param>
     /// <param name="developer"></param>
     /// <response code="204">Update successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
@@ -73,7 +74,7 @@ public class DevelopersController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>Deletes a developer</summary>
+    /// <summary>Delete a developer</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>

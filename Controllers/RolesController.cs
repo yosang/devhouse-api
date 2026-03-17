@@ -13,7 +13,7 @@ public class RolesController : ControllerBase
     /// <summary> Retrieve a list of roles </summary>
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
-    /// <reponse code="200">All resources retrieved</response>
+    /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Role>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Role>>> Get(
@@ -47,6 +47,7 @@ public class RolesController : ControllerBase
     }
 
     /// <summary>Update a role</summary>
+    /// <param name="id"></param>
     /// <param name="role"></param>
     /// <response code="204">Update successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
@@ -70,7 +71,7 @@ public class RolesController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>Deletes a role</summary>
+    /// <summary>Delete a role</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>

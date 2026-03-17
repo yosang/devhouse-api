@@ -14,7 +14,7 @@ public class ProjectTypesController : ControllerBase
     /// <summary> Retrieve a list of project types </summary>
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
-    /// <reponse code="200">All resources retrieved</response>
+    /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ProjectType>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ProjectType>>> Get(
@@ -49,6 +49,7 @@ public class ProjectTypesController : ControllerBase
     }
 
     /// <summary>Update a project type</summary>
+    /// <param name="id"></param>
     /// <param name="projecttype"></param>
     /// <response code="204">Update successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
@@ -72,7 +73,7 @@ public class ProjectTypesController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>Deletes a project type</summary>
+    /// <summary>Delete a project type</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>

@@ -14,7 +14,7 @@ public class ProjectsController : ControllerBase
     /// <summary> Retrieve a list of projects </summary>
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
-    /// <reponse code="200">All resources retrieved</response>
+    /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Project>>> Get(
@@ -48,6 +48,7 @@ public class ProjectsController : ControllerBase
     }
 
     /// <summary>Update a project</summary>
+    /// <param name="id"></param>
     /// <param name="project"></param>
     /// <response code="204">Update successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
@@ -71,7 +72,7 @@ public class ProjectsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>Deletes a project</summary>
+    /// <summary>Delete a project</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>

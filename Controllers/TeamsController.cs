@@ -14,7 +14,7 @@ public class TeamsController : ControllerBase
     /// <summary> Retrieve a list of teams </summary>
     /// <param name="page"></param>
     /// <param name="pageSize"></param>
-    /// <reponse code="200">All resources retrieved</response>
+    /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Team>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Team>>> Get(
@@ -48,6 +48,7 @@ public class TeamsController : ControllerBase
     }
 
     /// <summary>Update a team</summary>
+    /// <param name="id"></param>
     /// <param name="team"></param>
     /// <response code="204">Update successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
@@ -71,7 +72,7 @@ public class TeamsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>Deletes a team</summary>
+    /// <summary>Delete a team</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
     /// <response code="404">Resource not found by id</response>
