@@ -29,15 +29,22 @@ public class ProjectTypeService
         return pt;
     }
 
-    public async Task<bool> Update(int id, ProjectType pt)
+    public async Task<(bool notFound, bool badRequest)> Update(int id, ProjectType pt)
     {
-        // To be implemented
-        return true;
+        if (id != pt.Id) return (false, true);
+
+        var entity = await _ctx.ProjectTypes.FindAsync(id);
+        if (entity == null) return (true, false);
+
+        entity.Name = pt.Name;
+
+        await _ctx.SaveChangesAsync();
+        return (false, false);
     }
 
-    public async Task<bool> Delete(int id)
-    {
-        // To be implemented
-        return true;
-    }
+    // public async Task<bool> Delete(int id)
+    // {
+    //     // To be implemented
+    //     return true;
+    // }
 }

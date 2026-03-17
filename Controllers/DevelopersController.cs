@@ -52,13 +52,13 @@ public class DevelopersController : ControllerBase
     /// <summary>Update a developer</summary>
     /// <param name="developer"></param>
     /// <response code="204">Update successful, no content returned</response>
-    [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpPut("{id}")]
-    public async Task<ActionResult<Developer>> Update(int id, Developer developer)
+    public async Task<ActionResult> Update(int id, Developer developer)
     {
-        var success = await _service.Update(id, developer);
-        if (!success) return NotFound();
+        var (notFound, badRequest) = await _service.Update(id, developer);
+        if (notFound) return NotFound();
+        if (badRequest) return BadRequest();
 
         return NoContent();
     }

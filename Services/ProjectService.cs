@@ -30,15 +30,25 @@ public class ProjectService
         return project;
     }
 
-    public async Task<bool> Update(int id, Project project)
+    public async Task<(bool notFound, bool badRequest)> Update(int id, Project project)
     {
-        // To be implemented
-        return true;
+        if (id != project.Id) return (false, true);
+
+        var entity = await _ctx.Projects.FindAsync(id);
+        if (entity == null) return (true, false);
+
+        entity.Name = project.Name;
+        entity.TeamId = project.TeamId;
+        entity.ProjectTypeId = project.ProjectTypeId;
+
+        await _ctx.SaveChangesAsync();
+
+        return (false, false);
     }
 
-    public async Task<bool> Delete(int id)
-    {
-        // To be implemented
-        return true;
-    }
+    // public async Task<bool> Delete(int id)
+    // {
+    //     // To be implemented
+    //     return true;
+    // }
 }

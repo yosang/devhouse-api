@@ -31,15 +31,22 @@ public class TeamService
         return team;
     }
 
-    public async Task<bool> Update(int id, Team team)
+    public async Task<(bool notFound, bool badRequest)> Update(int id, Team team)
     {
-        // To be implemented
-        return true;
+        if (id != team.Id) return (false, true);
+
+        var entity = await _ctx.Teams.FindAsync(id);
+        if (entity == null) return (true, false);
+
+        entity.Name = team.Name;
+
+        await _ctx.SaveChangesAsync();
+        return (false, false);
     }
 
-    public async Task<bool> Delete(int id)
-    {
-        // To be implemented
-        return true;
-    }
+    // public async Task<bool> Delete(int id)
+    // {
+    //     // To be implemented
+    //     return true;
+    // }
 }

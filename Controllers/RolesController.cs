@@ -46,6 +46,18 @@ public class RolesController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
     }
 
-    // [HttpPut]
+    /// <summary>Update a role</summary>
+    /// <param name="role"></param>
+    /// <response code="204">Update successful, no content returned</response>
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(int id, Role role)
+    {
+        var (notFound, badRequest) = await _service.Update(id, role);
+        if (notFound) return NotFound();
+        if (badRequest) return BadRequest();
+
+        return NoContent();
+    }
     // [HttpDelete]
 }

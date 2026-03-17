@@ -46,6 +46,20 @@ public class ProjectsController : ControllerBase
         var newProject = await _service.Create(project);
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }
-    // [HttpPut]
+
+    /// <summary>Update a project</summary>
+    /// <param name="project"></param>
+    /// <response code="204">Update successful, no content returned</response>
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(int id, Project project)
+    {
+        var (notFound, badRequest) = await _service.Update(id, project);
+        if (notFound) return NotFound();
+        if (badRequest) return BadRequest();
+
+        return NoContent();
+    }
+
     // [HttpDelete]
 }

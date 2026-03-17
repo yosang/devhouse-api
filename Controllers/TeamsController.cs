@@ -47,6 +47,18 @@ public class TeamsController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = newTeam.Id }, newTeam);
     }
 
-    // [HttpPut]
+    /// <summary>Update a team</summary>
+    /// <param name="team"></param>
+    /// <response code="204">Update successful, no content returned</response>
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(int id, Team team)
+    {
+        var (notFound, badRequest) = await _service.Update(id, team);
+        if (notFound) return NotFound();
+        if (badRequest) return BadRequest(); // Provide a better response message with new Problem or use swagger documentation
+
+        return NoContent();
+    }
     // [HttpDelete]
 }

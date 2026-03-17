@@ -30,25 +30,25 @@ public class DeveloperService
         return developer;
     }
 
-    public async Task<bool> Update(int id, Developer developer)
+    public async Task<(bool notFound, bool badRequest)> Update(int id, Developer developer)
     {
-        if (id != developer.Id) return false;
+        if (id != developer.Id) return (false, true);
 
-        var dev = await _ctx.Developers.FindAsync(id);
-        if (dev == null) return false;
+        var entity = await _ctx.Developers.FindAsync(id);
+        if (entity == null) return (true, false);
 
-        dev.Firstname = developer.Firstname;
-        dev.Lastname = developer.Lastname;
-        dev.RoleId = developer.RoleId;
-        dev.TeamId = developer.TeamId;
+        entity.Firstname = developer.Firstname;
+        entity.Lastname = developer.Lastname;
+        entity.RoleId = developer.RoleId;
+        entity.TeamId = developer.TeamId;
 
         await _ctx.SaveChangesAsync();
-        return true;
+        return (false, false);
     }
 
-    public async Task<bool> Delete(int id)
-    {
-        // To be implemented
-        return true;
-    }
+    // public async Task<bool> Delete(int id)
+    // {
+    //     // To be implemented
+    //     return true;
+    // }
 }

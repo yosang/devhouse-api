@@ -28,15 +28,22 @@ public class RoleService
         return role;
     }
 
-    public async Task<bool> Update(int id, Role role)
+    public async Task<(bool notFound, bool badRequest)> Update(int id, Role role)
     {
-        // To be implemented
-        return true;
+        if (id != role.Id) return (false, true);
+
+        var entity = await _ctx.Roles.FindAsync(id);
+        if (entity == null) return (true, false);
+
+        entity.Name = role.Name;
+
+        await _ctx.SaveChangesAsync();
+        return (false, false);
     }
 
-    public async Task<bool> Delete(int id)
-    {
-        // To be implemented
-        return true;
-    }
+    // public async Task<bool> Delete(int id)
+    // {
+    //     // To be implemented
+    //     return true;
+    // }
 }
