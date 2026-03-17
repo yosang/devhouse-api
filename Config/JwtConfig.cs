@@ -9,7 +9,7 @@ public static class JwtConfig
     {
         var jwtSettings = options.GetRequiredSection("JwtSettings").Get<JwtSettings>()!;
 
-        service.AddSingleton<JwtSettings>()
+        service.AddSingleton(jwtSettings)
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => options.TokenValidationParameters = jwtSettings.tokenValidationParameters);
 
