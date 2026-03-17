@@ -1,10 +1,10 @@
-using System.Reflection;
 using devhouse.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatatabaseConfig(builder.Configuration)
                 .AddSwaggerConfig()
+                .AddJwtConfig(builder.Configuration)
                 .AddServices()
                 .AddControllers();
 
@@ -12,8 +12,10 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello world");
 
-app.UseSwaggerMiddlewares();
 
-app.MapControllers();
+app.UseSwaggerConfig()
+    .UseAuthConfig()
+    // Add Cors middleware
+    .MapControllers();
 
 app.Run();
