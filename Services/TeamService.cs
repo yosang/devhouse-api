@@ -8,8 +8,8 @@ namespace devhouse.Services;
 public class TeamService
 {
     public DatabaseContext _ctx { get; set; }
-
-    public TeamService(DatabaseContext context) => _ctx = context;
+    public AuthService _service { get; set; }
+    public TeamService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<List<Team>> GetAll(int page = 1, int pageSize = 5)
     {
@@ -24,34 +24,41 @@ public class TeamService
 
     public async Task<Team> GetOne(int id) => await _ctx.Teams.Where(t => t.Id == id).FirstOrDefaultAsync() ?? null!;
 
-    public async Task<Team> Create(Team team)
+    public async Task<(Team, bool unauthorized)> Create(Team team)
     {
+        if (!_service.isAdmin()) return (null!, true);
+
         _ctx.Teams.Add(team);
         await _ctx.SaveChangesAsync();
-        return team;
+
+        return (team, false);
     }
 
-    public async Task<(bool notFound, bool badRequest)> Update(int id, Team team)
+    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Team team)
     {
-        if (id != team.Id) return (false, true);
+        if (id != team.Id) return (false, true, false);
+
+        if (!_service.isAdmin()) return (false, false, true);
 
         var entity = await _ctx.Teams.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return (true, false, false);
 
         entity.Name = team.Name;
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return (false, false, false);
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
     {
+        if (!_service.isAdmin()) return (false, true);
+
         var entity = await _ctx.Teams.FindAsync(id);
-        if (entity == null) return false;
+        if (entity == null) return (true, false);
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return true;
+        return (false, false);
     }
 }

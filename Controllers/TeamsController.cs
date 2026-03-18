@@ -40,12 +40,16 @@ public class TeamsController : ControllerBase
     /// <summary>Create a new team</summary>
     /// <param name="team"></param>
     /// <response code="201">Resource created</response>
+    /// <response code="403">Missing required permissions</response>
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(Team), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Team), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Team>> Create(Team team)
     {
-        var newTeam = await _service.Create(team);
+        var (newTeam, unauthorized) = await _service.Create(team);
+        if (unauthorized) return Forbid();
+
         return CreatedAtAction(nameof(Get), new { id = newTeam.Id }, newTeam);
     }
 
@@ -53,16 +57,18 @@ public class TeamsController : ControllerBase
     /// <param name="id"></param>
     /// <param name="team"></param>
     /// <response code="204">Update successful, no content returned</response>
-    /// <response code="404">Resource not found by id</response>
     /// <response code="400">Route path Id and Request body Id mismatch</response>
+    /// <response code="403">Missing required permissions</response>
+    /// <response code="404">Resource not found by id</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     [Authorize]
     public async Task<ActionResult> Update(int id, Team team)
     {
-        var (notFound, badRequest) = await _service.Update(id, team);
+        var (notFound, badRequest, unauthorized) = await _service.Update(id, team);
         if (notFound) return NotFound();
         if (badRequest) return BadRequest(new ProblemDetails()
         {
@@ -71,6 +77,7 @@ public class TeamsController : ControllerBase
             Status = StatusCodes.Status400BadRequest,
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
         });
+        if (unauthorized) return Forbid();
 
         return NoContent();
     }
@@ -78,15 +85,18 @@ public class TeamsController : ControllerBase
     /// <summary>Delete a team</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
+    /// <response code="403">Missing required permissions</response>
     /// <response code="404">Resource not found by id</response>
     [HttpDelete("{id}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {
-        var success = await _service.Delete(id);
-        if (!success) return NotFound();
+        var (notfound, unauthorized) = await _service.Delete(id);
+        if (notfound) return NotFound();
+        if (unauthorized) return Forbid();
 
         return NoContent();
     }

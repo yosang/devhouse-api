@@ -1,12 +1,14 @@
 using devhouse.Context;
 using devhouse.Models;
+using devhouse.Services;
 using Microsoft.EntityFrameworkCore;
 
 public class RoleService
 {
     public DatabaseContext _ctx { get; set; }
+    public AuthService _service { get; set; }
 
-    public RoleService(DatabaseContext context) => _ctx = context;
+    public RoleService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<List<Role>> GetAll(int page = 1, int pageSize = 5)
     {
@@ -21,34 +23,41 @@ public class RoleService
 
     public async Task<Role> GetOne(int id) => await _ctx.Roles.Where(r => r.Id == id).FirstOrDefaultAsync() ?? null!;
 
-    public async Task<Role> Create(Role role)
+    public async Task<(Role role, bool unauthorized)> Create(Role role)
     {
+        if (!_service.isAdmin()) return (null!, true);
+
         _ctx.Roles.Add(role);
         await _ctx.SaveChangesAsync();
-        return role;
+
+        return (role, false);
     }
 
-    public async Task<(bool notFound, bool badRequest)> Update(int id, Role role)
+    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Role role)
     {
-        if (id != role.Id) return (false, true);
+        if (id != role.Id) return (false, true, false);
+
+        if (!_service.isAdmin()) return (false, false, true);
 
         var entity = await _ctx.Roles.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return (true, false, false);
 
         entity.Name = role.Name;
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return (false, false, false);
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
     {
+        if (!_service.isAdmin()) return (false, true);
+
         var entity = await _ctx.Roles.FindAsync(id);
-        if (entity == null) return false;
+        if (entity == null) return (true, false);
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return true;
+        return (false, false);
     }
 }

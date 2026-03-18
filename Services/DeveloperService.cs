@@ -2,7 +2,6 @@ using devhouse.Context;
 using devhouse.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using devhouse.DTOs;
 namespace devhouse.Services;
 
 public class DeveloperService
