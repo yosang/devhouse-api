@@ -45,7 +45,10 @@ public class ProjectsController : ControllerBase
     [ProducesResponseType(typeof(Project), StatusCodes.Status201Created)]
     public async Task<ActionResult<Project>> Create(Project project)
     {
-        var newProject = await _service.Create(project);
+        var (newProject, unauthorized) = await _service.Create(project);
+
+        if (unauthorized) return Forbid();
+
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }
 

@@ -8,7 +8,9 @@ public class ProjectService
 {
     public DatabaseContext _ctx;
 
-    public ProjectService(DatabaseContext context) => _ctx = context;
+    public AuthService _service { get; set; }
+
+    public ProjectService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<List<Project>> GetAll(int page = 1, int pageSize = 5)
     {
@@ -23,13 +25,14 @@ public class ProjectService
 
     public async Task<Project> GetOne(int id) => await _ctx.Projects.Where(p => p.Id == id).FirstOrDefaultAsync() ?? null!;
 
-    public async Task<Project> Create(Project project)
+    public async Task<(Project project, bool unauthorized)> Create(Project project)
     {
-        // ! Check if permissions pass
+        // if (!_service.isAdmin()) return (null!, true);
 
         _ctx.Projects.Add(project);
         await _ctx.SaveChangesAsync();
-        return project;
+
+        return (project, false);
     }
 
     public async Task<(bool notFound, bool badRequest)> Update(int id, Project project)
