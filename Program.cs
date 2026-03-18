@@ -12,7 +12,7 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello world");
+app.MapGet("/", () => "Visit /swagger for API documentation");
 
 
 app.UseSwaggerConfig()
