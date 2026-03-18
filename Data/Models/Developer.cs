@@ -1,6 +1,8 @@
+using devhouse.Interfaces;
+
 namespace devhouse.Models;
 
-public class Developer
+public class Developer : ITeamedUp, ISelfModify
 {
     public int Id { get; set; }
 

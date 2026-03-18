@@ -1,5 +1,6 @@
 using devhouse.Context;
 using devhouse.DTOs;
+using devhouse.Interfaces;
 using devhouse.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,49 +32,23 @@ public class AuthService
         return (authenticated: false, token: string.Empty);
     }
 
-    public bool CanCreateOrDeleteDeveloper(Developer developer)
+    public bool isAuthorized<T>(T entity)
     {
         var claims = GetClaims;
         var role = (RolesENUM)claims.roleId;
 
-        return role switch
-        {
-            RolesENUM.Admin => true, // can globally create/delete developers
-            RolesENUM.TeamLead => claims.teamId == developer.TeamId,// can only create/delete developers within their teams
-            RolesENUM.Developer => false, // cannot create developers, only admins and teamleaders can
-            _ => false
-        };
+        if (isAdmin()) return true; // Admins can alter everything
+
+        if (entity is ITeamedUp t)
+            return t.TeamId == claims.teamId && role == RolesENUM.TeamLead; // Teamleads can only alter within of their team
+
+        if (entity is ISelfModify s)
+            return s.Id == claims.developerId && role == RolesENUM.Developer; // Developers can only modify themselves
+
+        return false;
     }
 
-    public bool CanModifyDeveloper(Developer developer)
-    {
-        var claims = GetClaims;
-        var role = (RolesENUM)claims.roleId;
-
-        return role switch
-        {
-            RolesENUM.Admin => true, // can modify anything
-            RolesENUM.TeamLead => claims.teamId == developer.TeamId, // can only modify developers within their teams
-            RolesENUM.Developer => claims.developerId == developer.Id,// can only modify itself
-            _ => false
-        };
-    }
-
-    public bool CanCreateModifyOrDeleteProject(Project project)
-    {
-        var claims = GetClaims;
-        var role = (RolesENUM)GetClaims.roleId;
-
-        return role switch
-        {
-            RolesENUM.Admin => true,
-            RolesENUM.TeamLead => claims.teamId == project.TeamId,// can only create/modidfy or delete projects within their teams
-            RolesENUM.Developer => false, // cannot create projects, only admins and teamleaders can
-            _ => false
-        };
-    }
-
-    public bool isAdmin() => GetClaims.roleName == RolesENUM.Admin.ToString();
+    public bool isAdmin() => (RolesENUM)GetClaims.roleId == RolesENUM.Admin;
 
     public enum RolesENUM
     {

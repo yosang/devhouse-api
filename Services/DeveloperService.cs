@@ -27,7 +27,7 @@ public class DeveloperService
 
     public async Task<(Developer newDev, bool unauthorized)> Create(Developer developer)
     {
-        if (!_service.CanCreateOrDeleteDeveloper(developer)) return (null!, true);
+        if (!_service.isAuthorized(developer)) return (null!, true);
 
         _ctx.Developers.Add(developer);
 
@@ -44,7 +44,7 @@ public class DeveloperService
         var entity = await _ctx.Developers.FindAsync(id);
         if (entity == null) return (true, false, false);
 
-        if (!_service.CanModifyDeveloper(entity)) return (false, false, true);
+        if (!_service.isAuthorized(entity)) return (false, false, true);
 
         entity.Firstname = developer.Firstname;
         entity.Lastname = developer.Lastname;
@@ -66,7 +66,7 @@ public class DeveloperService
         var developer = await _ctx.Developers.FindAsync(id);
         if (developer == null) return (true, false);
 
-        if (!_service.CanCreateOrDeleteDeveloper(developer)) return (false, true);
+        if (!_service.isAuthorized(developer)) return (false, true);
 
         _ctx.Remove(developer);
 
