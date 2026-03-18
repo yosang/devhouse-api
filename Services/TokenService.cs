@@ -22,6 +22,7 @@ public class TokenService
         {
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.NameIdentifier, developer.Id.ToString()!),
+            new Claim(ClaimTypes.Role, developer.Role!.ToString()!),
             new Claim("teamId", developer.TeamId.ToString()),
             new Claim("roleId", developer.RoleId.ToString()),
         },
@@ -32,6 +33,7 @@ public class TokenService
     ));
 
     // These are helpers that retrieve certain values from the JWT token using HttpContext
+    public string GetRoleName() => _http.HttpContext!.User.FindFirstValue(ClaimTypes.Role)!;
     public int GetId() => Convert.ToInt32(_http.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
     public int GetRoleId() => Convert.ToInt32(_http.HttpContext!.User.FindFirstValue("roleId"));
     public int GetTeamId() => Convert.ToInt32(_http.HttpContext!.User.FindFirstValue("teamId"));

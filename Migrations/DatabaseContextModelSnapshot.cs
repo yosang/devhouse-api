@@ -25,7 +25,7 @@ namespace devhouse.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Firstname")
                         .IsRequired()
@@ -46,6 +46,9 @@ namespace devhouse.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
 
                     b.HasIndex("TeamId");
@@ -56,20 +59,16 @@ namespace devhouse.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "alice@dev.com",
                             Firstname = "Alice",
                             Lastname = "Johnson",
-                            Password = "developer1234",
                             RoleId = 1,
                             TeamId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Email = "michael@dev.com",
                             Firstname = "Michael",
                             Lastname = "Cross",
-                            Password = "teamlead1234",
                             RoleId = 2,
                             TeamId = 1
                         },
@@ -79,7 +78,7 @@ namespace devhouse.Migrations
                             Email = "elise@dev.com",
                             Firstname = "Elise",
                             Lastname = "Bergum",
-                            Password = "admin1234",
+                            Password = "AQAAAAIAAYagAAAAEIycYypww+L0YTgfBXysI/q12ZTOl6m2RO7SL3Q3OuEe2cOyBMw257v8+7MGOrMTQg==",
                             RoleId = 3,
                             TeamId = 1
                         },

@@ -66,7 +66,7 @@ namespace devhouse.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Firstname = table.Column<string>(type: "longtext", nullable: false),
                     Lastname = table.Column<string>(type: "longtext", nullable: false),
-                    Email = table.Column<string>(type: "longtext", nullable: true),
+                    Email = table.Column<string>(type: "varchar(255)", nullable: true),
                     Password = table.Column<string>(type: "longtext", nullable: true),
                     TeamId = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false)
@@ -148,9 +148,9 @@ namespace devhouse.Migrations
                 columns: new[] { "Id", "Email", "Firstname", "Lastname", "Password", "RoleId", "TeamId" },
                 values: new object[,]
                 {
-                    { 1, "alice@dev.com", "Alice", "Johnson", "developer1234", 1, 1 },
-                    { 2, "michael@dev.com", "Michael", "Cross", "teamlead1234", 2, 1 },
-                    { 3, "elise@dev.com", "Elise", "Bergum", "admin1234", 3, 1 },
+                    { 1, null, "Alice", "Johnson", null, 1, 1 },
+                    { 2, null, "Michael", "Cross", null, 2, 1 },
+                    { 3, "elise@dev.com", "Elise", "Bergum", "AQAAAAIAAYagAAAAEIycYypww+L0YTgfBXysI/q12ZTOl6m2RO7SL3Q3OuEe2cOyBMw257v8+7MGOrMTQg==", 3, 1 },
                     { 4, null, "Bob", "Smith", null, 1, 2 },
                     { 5, null, "Marta", "Parks", null, 2, 2 },
                     { 6, null, "Diana", "Clark", null, 1, 3 }
@@ -165,6 +165,12 @@ namespace devhouse.Migrations
                     { 2, "Mobile", 2, 2 },
                     { 3, "API", 3, 3 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Developers_Email",
+                table: "Developers",
+                column: "Email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Developers_RoleId",

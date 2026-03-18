@@ -72,14 +72,15 @@ public class DatabaseContext : DbContext
                 mb.Entity<Team>().HasData(
                     new Team { Id = 1, Name = "Platform" },
                     new Team { Id = 2, Name = "Mobile" },
-                    new Team { Id = 3, Name = "API" }
+                    new Team { Id = 3, Name = "API" },
+                    new Team { Id = 4, Name = "Admin" }
                 );
 
                 // Developers
                 mb.Entity<Developer>().HasData(
-                    new Developer { Id = 1, Firstname = "Alice", Lastname = "Johnson", Email = "alice@dev.com", Password = "developer1234", TeamId = 1, RoleId = 1 },
-                    new Developer { Id = 2, Firstname = "Michael", Lastname = "Cross", Email = "michael@dev.com", Password = "teamlead1234", TeamId = 1, RoleId = 2 },
-                    new Developer { Id = 3, Firstname = "Elise", Lastname = "Bergum", Email = "elise@dev.com", Password = "admin1234", TeamId = 1, RoleId = 3 },
+                    new Developer { Id = 1, Firstname = "Elise", Lastname = "Bergum", Email = "admin@dev.com", Password = "AQAAAAIAAYagAAAAEIycYypww+L0YTgfBXysI/q12ZTOl6m2RO7SL3Q3OuEe2cOyBMw257v8+7MGOrMTQg==", TeamId = 4, RoleId = 3 },
+                    new Developer { Id = 2, Firstname = "Alice", Lastname = "Johnson", TeamId = 1, RoleId = 1 },
+                    new Developer { Id = 3, Firstname = "Michael", Lastname = "Cross", TeamId = 1, RoleId = 2 },
                     new Developer { Id = 4, Firstname = "Bob", Lastname = "Smith", TeamId = 2, RoleId = 1 },
                     new Developer { Id = 5, Firstname = "Marta", Lastname = "Parks", TeamId = 2, RoleId = 2 },
                     new Developer { Id = 6, Firstname = "Diana", Lastname = "Clark", TeamId = 3, RoleId = 1 }
