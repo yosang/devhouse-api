@@ -26,8 +26,6 @@ public class DatabaseContext : DbContext
                 mb.Entity<Developer>().Property(p => p.Lastname).IsRequired();
                 mb.Entity<Role>().Property(p => p.Name).IsRequired();
 
-
-
                 // Relationships
                 mb.Entity<Project>() // A Project belongs to one project type - A Project type can be set on many Projects
                         .HasOne(pt => pt.ProjectType)
@@ -64,32 +62,33 @@ public class DatabaseContext : DbContext
 
                 // Roles
                 mb.Entity<Role>().HasData(
-                    new Role { Id = 1, Name = "Frontend Developer" },
-                    new Role { Id = 2, Name = "Backend Developer" },
-                    new Role { Id = 3, Name = "Fullstack Developer" },
-                    new Role { Id = 4, Name = "Team Lead" }
+                    new Role { Id = 1, Name = "Developer" },
+                    new Role { Id = 2, Name = "TeamLead" },
+                    new Role { Id = 3, Name = "Admin" }
                 );
 
                 // Teams
                 mb.Entity<Team>().HasData(
-                    new Team { Id = 1, Name = "Platform Team" },
-                    new Team { Id = 2, Name = "Mobile Team" },
-                    new Team { Id = 3, Name = "API Team" }
+                    new Team { Id = 1, Name = "Platform" },
+                    new Team { Id = 2, Name = "Mobile" },
+                    new Team { Id = 3, Name = "API" }
                 );
 
                 // Developers
                 mb.Entity<Developer>().HasData(
-                    new Developer { Id = 1, Firstname = "Alice", Lastname = "Johnson", TeamId = 1, RoleId = 3 },
-                    new Developer { Id = 2, Firstname = "Bob", Lastname = "Smith", TeamId = 1, RoleId = 1 },
-                    new Developer { Id = 3, Firstname = "Charlie", Lastname = "Brown", TeamId = 2, RoleId = 2 },
-                    new Developer { Id = 4, Firstname = "Diana", Lastname = "Clark", TeamId = 3, RoleId = 4 }
+                    new Developer { Id = 1, Firstname = "Alice", Lastname = "Johnson", Email = "alice@dev.com", Password = "developer1234", TeamId = 1, RoleId = 1 },
+                    new Developer { Id = 2, Firstname = "Michael", Lastname = "Cross", Email = "michael@dev.com", Password = "teamlead1234", TeamId = 1, RoleId = 2 },
+                    new Developer { Id = 3, Firstname = "Elise", Lastname = "Bergum", Email = "elise@dev.com", Password = "admin1234", TeamId = 1, RoleId = 3 },
+                    new Developer { Id = 4, Firstname = "Bob", Lastname = "Smith", TeamId = 2, RoleId = 1 },
+                    new Developer { Id = 5, Firstname = "Marta", Lastname = "Parks", TeamId = 2, RoleId = 2 },
+                    new Developer { Id = 6, Firstname = "Diana", Lastname = "Clark", TeamId = 3, RoleId = 1 }
                 );
 
                 // Projects
                 mb.Entity<Project>().HasData(
-                    new Project { Id = 1, Name = "DevHouse Website", ProjectTypeId = 1, TeamId = 1 },
-                    new Project { Id = 2, Name = "DevHouse Mobile", ProjectTypeId = 2, TeamId = 2 },
-                    new Project { Id = 3, Name = "DevHouse API", ProjectTypeId = 3, TeamId = 3 }
+                    new Project { Id = 1, Name = "Website", ProjectTypeId = 1, TeamId = 1 },
+                    new Project { Id = 2, Name = "Mobile", ProjectTypeId = 2, TeamId = 2 },
+                    new Project { Id = 3, Name = "API", ProjectTypeId = 3, TeamId = 3 }
                 );
         }
 }

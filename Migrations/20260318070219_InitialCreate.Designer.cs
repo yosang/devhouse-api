@@ -10,8 +10,8 @@ using devhouse.Context;
 namespace devhouse.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20260316164545_AddSeeds")]
-    partial class AddSeeds
+    [Migration("20260318070219_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,11 +21,14 @@ namespace devhouse.Migrations
                 .HasAnnotation("ProductVersion", "9.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Developer", b =>
+            modelBuilder.Entity("devhouse.Models.Developer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Firstname")
                         .IsRequired()
@@ -33,6 +36,9 @@ namespace devhouse.Migrations
 
                     b.Property<string>("Lastname")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
                         .HasColumnType("longtext");
 
                     b.Property<int>("RoleId")
@@ -53,103 +59,56 @@ namespace devhouse.Migrations
                         new
                         {
                             Id = 1,
+                            Email = "alice@dev.com",
                             Firstname = "Alice",
                             Lastname = "Johnson",
-                            RoleId = 3,
-                            TeamId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Firstname = "Bob",
-                            Lastname = "Smith",
+                            Password = "developer1234",
                             RoleId = 1,
                             TeamId = 1
                         },
                         new
                         {
+                            Id = 2,
+                            Email = "michael@dev.com",
+                            Firstname = "Michael",
+                            Lastname = "Cross",
+                            Password = "teamlead1234",
+                            RoleId = 2,
+                            TeamId = 1
+                        },
+                        new
+                        {
                             Id = 3,
-                            Firstname = "Charlie",
-                            Lastname = "Brown",
+                            Email = "elise@dev.com",
+                            Firstname = "Elise",
+                            Lastname = "Bergum",
+                            Password = "admin1234",
+                            RoleId = 3,
+                            TeamId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Firstname = "Bob",
+                            Lastname = "Smith",
+                            RoleId = 1,
+                            TeamId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Firstname = "Marta",
+                            Lastname = "Parks",
                             RoleId = 2,
                             TeamId = 2
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 6,
                             Firstname = "Diana",
                             Lastname = "Clark",
-                            RoleId = 4,
+                            RoleId = 1,
                             TeamId = 3
-                        });
-                });
-
-            modelBuilder.Entity("Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Frontend Developer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Backend Developer"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Fullstack Developer"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Team Lead"
-                        });
-                });
-
-            modelBuilder.Entity("Team", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Teams");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Platform Team"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Mobile Team"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "API Team"
                         });
                 });
 
@@ -181,21 +140,21 @@ namespace devhouse.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "DevHouse Website",
+                            Name = "Website",
                             ProjectTypeId = 1,
                             TeamId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Name = "DevHouse Mobile",
+                            Name = "Mobile",
                             ProjectTypeId = 2,
                             TeamId = 2
                         },
                         new
                         {
                             Id = 3,
-                            Name = "DevHouse API",
+                            Name = "API",
                             ProjectTypeId = 3,
                             TeamId = 3
                         });
@@ -233,15 +192,79 @@ namespace devhouse.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Developer", b =>
+            modelBuilder.Entity("devhouse.Models.Role", b =>
                 {
-                    b.HasOne("Role", "Role")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Developer"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "TeamLead"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Admin"
+                        });
+                });
+
+            modelBuilder.Entity("devhouse.Models.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teams");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Platform"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Mobile"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "API"
+                        });
+                });
+
+            modelBuilder.Entity("devhouse.Models.Developer", b =>
+                {
+                    b.HasOne("devhouse.Models.Role", "Role")
                         .WithMany("Developers")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Team", "Team")
+                    b.HasOne("devhouse.Models.Team", "Team")
                         .WithMany("Developers")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -260,7 +283,7 @@ namespace devhouse.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Team", "Team")
+                    b.HasOne("devhouse.Models.Team", "Team")
                         .WithMany("Projects")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -271,20 +294,20 @@ namespace devhouse.Migrations
                     b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("Role", b =>
+            modelBuilder.Entity("devhouse.Models.ProjectType", b =>
                 {
-                    b.Navigation("Developers");
-                });
-
-            modelBuilder.Entity("Team", b =>
-                {
-                    b.Navigation("Developers");
-
                     b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("devhouse.Models.ProjectType", b =>
+            modelBuilder.Entity("devhouse.Models.Role", b =>
                 {
+                    b.Navigation("Developers");
+                });
+
+            modelBuilder.Entity("devhouse.Models.Team", b =>
+                {
+                    b.Navigation("Developers");
+
                     b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
