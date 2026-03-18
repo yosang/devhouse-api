@@ -7,7 +7,8 @@ namespace devhouse.Services;
 public class ProjectTypeService
 {
     public DatabaseContext _ctx { get; set; }
-    public ProjectTypeService(DatabaseContext context) => _ctx = context;
+    public AuthService _service { get; set; }
+    public ProjectTypeService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<List<ProjectType>> GetAll(int page = 1, int pageSize = 5)
     {
@@ -22,34 +23,41 @@ public class ProjectTypeService
 
     public async Task<ProjectType> GetOne(int id) => await _ctx.ProjectTypes.Where(pt => pt.Id == id).FirstOrDefaultAsync() ?? null!;
 
-    public async Task<ProjectType> Create(ProjectType pt)
+    public async Task<(ProjectType project, bool unauthorized)> Create(ProjectType pt)
     {
+        if (!_service.isAdmin()) return (null!, true);
+
         _ctx.ProjectTypes.Add(pt);
         await _ctx.SaveChangesAsync();
-        return pt;
+        return (pt, false);
     }
 
-    public async Task<(bool notFound, bool badRequest)> Update(int id, ProjectType pt)
+    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, ProjectType pt)
     {
-        if (id != pt.Id) return (false, true);
+        if (id != pt.Id) return (false, true, false);
+
+        if (!_service.isAdmin()) return (false, false, true);
 
         var entity = await _ctx.ProjectTypes.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return (true, false, false);
+
 
         entity.Name = pt.Name;
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return (false, false, false);
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
     {
+        if (!_service.isAdmin()) return (false, true);
+
         var entity = await _ctx.ProjectTypes.FindAsync(id);
-        if (entity == null) return false;
+        if (entity == null) return (true, false);
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return true;
+        return (false, false);
     }
 }

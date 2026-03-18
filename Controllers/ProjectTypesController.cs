@@ -41,12 +41,16 @@ public class ProjectTypesController : ControllerBase
     /// <summary>Create a new project type</summary>
     /// <param name="pt"></param>
     /// <response code="201">Resource created</response>
+    /// <response code="403">Missing required permissions</response>
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(ProjectType), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ProjectType>> Create(ProjectType pt)
     {
-        var newPt = await _service.Create(pt);
+        var (newPt, unauthorized) = await _service.Create(pt);
+        if (unauthorized) return Forbid();
+
         return CreatedAtAction(nameof(Get), new { id = newPt.Id }, newPt);
     }
 
@@ -54,16 +58,18 @@ public class ProjectTypesController : ControllerBase
     /// <param name="id"></param>
     /// <param name="projecttype"></param>
     /// <response code="204">Update successful, no content returned</response>
+    /// <response code="403">Missing required permissions</response>
     /// <response code="404">Resource not found by id</response>
     /// <response code="400">Route path Id and Request body Id mismatch</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     [Authorize]
     public async Task<ActionResult> Update(int id, ProjectType projecttype)
     {
-        var (notFound, badRequest) = await _service.Update(id, projecttype);
+        var (notFound, badRequest, unauthorized) = await _service.Update(id, projecttype);
         if (notFound) return NotFound();
         if (badRequest) return BadRequest(new ProblemDetails()
         {
@@ -72,6 +78,7 @@ public class ProjectTypesController : ControllerBase
             Status = StatusCodes.Status400BadRequest,
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
         });
+        if (unauthorized) return Forbid();
 
         return NoContent();
     }
@@ -79,15 +86,18 @@ public class ProjectTypesController : ControllerBase
     /// <summary>Delete a project type</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
+    /// <response code="403">Missing required permissions</response>
     /// <response code="404">Resource not found by id</response>
     [HttpDelete("{id}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {
-        var success = await _service.Delete(id);
-        if (!success) return NotFound();
+        var (notFound, unauthorized) = await _service.Delete(id);
+        if (notFound) return NotFound();
+        if (unauthorized) return Forbid();
 
         return NoContent();
     }
