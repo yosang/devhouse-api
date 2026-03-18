@@ -61,6 +61,18 @@ public class AuthService
             _ => false
         };
     }
+
+    public bool CanCreateModifyDeleteProjects(Project project)
+    {
+        var claims = GetClaims;
+        return (RolesENUM)claims.roleId switch
+        {
+            RolesENUM.Admin => true,
+            RolesENUM.TeamLead => project.TeamId == claims.teamId && (RolesENUM)project.TeamId < RolesENUM.TeamLead,
+            _ => false
+        };
+    }
+
     // This method instantly checks if the roleId from the token matches with the Admin enum
     // We are using this to prevent teamleads, who some permissions from altering certain properties, like RoleId and TeamId (admin protected)
     public bool isAdmin() => (RolesENUM)GetClaims.roleId == RolesENUM.Admin;

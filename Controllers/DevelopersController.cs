@@ -58,12 +58,13 @@ public class DevelopersController : ControllerBase
     /// <param name="id"></param>
     /// <param name="developer"></param>
     /// <response code="204">Update successful, no content returned</response>
-    /// <response code="404">Resource not found by id</response>
     /// <response code="400">Route path Id and Request body Id mismatch</response>
+    /// <response code="403">Missing required permissions</response>
+    /// <response code="404">Resource not found by id</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPut("{id}")]
     [Authorize]
     public async Task<ActionResult> Update(int id, Developer developer)
@@ -85,10 +86,12 @@ public class DevelopersController : ControllerBase
     /// <summary>Delete a developer</summary>
     /// <param name="id"></param>
     /// <response code="204">Deletion successful, no content returned</response>
+    /// <response code="403">Missing required permissions</response>
     /// <response code="404">Resource not found by id</response>
     [HttpDelete("{id}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {

@@ -27,7 +27,7 @@ public class ProjectService
 
     public async Task<(Project project, bool unauthorized)> Create(Project project)
     {
-        // if (!_service.isAdmin()) return (null!, true);
+        if (!_service.CanCreateModifyDeleteProjects(project)) return (null!, true);
 
         _ctx.Projects.Add(project);
         await _ctx.SaveChangesAsync();
@@ -35,34 +35,38 @@ public class ProjectService
         return (project, false);
     }
 
-    public async Task<(bool notFound, bool badRequest)> Update(int id, Project project)
+    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Project project)
     {
-        if (id != project.Id) return (false, true);
+        if (id != project.Id) return (false, true, false);
 
         var entity = await _ctx.Projects.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return (true, false, false);
 
-        // ! Check if permissions pass
+        if (!_service.CanCreateModifyDeleteProjects(entity)) return (false, false, true);
 
         entity.Name = project.Name;
-        entity.TeamId = project.TeamId;
         entity.ProjectTypeId = project.ProjectTypeId;
+
+        if (_service.isAdmin())
+        {
+            entity.TeamId = project.TeamId;
+        }
 
         await _ctx.SaveChangesAsync();
 
-        return (false, false);
+        return (false, false, false);
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
     {
         var entity = await _ctx.Projects.FindAsync(id);
-        if (entity == null) return false;
+        if (entity == null) return (true, false);
 
-        // ! Check if permissions pass
+        if (!_service.CanCreateModifyDeleteProjects(entity)) return (false, true);
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return true;
+        return (false, false);
     }
 }
