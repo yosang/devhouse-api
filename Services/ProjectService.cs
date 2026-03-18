@@ -25,6 +25,8 @@ public class ProjectService
 
     public async Task<Project> Create(Project project)
     {
+        // ! Check if permissions pass
+
         _ctx.Projects.Add(project);
         await _ctx.SaveChangesAsync();
         return project;
@@ -36,6 +38,8 @@ public class ProjectService
 
         var entity = await _ctx.Projects.FindAsync(id);
         if (entity == null) return (true, false);
+
+        // ! Check if permissions pass
 
         entity.Name = project.Name;
         entity.TeamId = project.TeamId;
@@ -50,6 +54,8 @@ public class ProjectService
     {
         var entity = await _ctx.Projects.FindAsync(id);
         if (entity == null) return false;
+
+        // ! Check if permissions pass
 
         _ctx.Remove(entity);
 
