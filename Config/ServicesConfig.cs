@@ -12,6 +12,7 @@ public static class ServicesConfig
                 .AddScoped<ProjectService>()
                 .AddScoped<RoleService>()
                 .AddScoped<TeamService>()
+                .AddScoped<AuthService>()
                 .AddSingleton<TokenService>();
 
         return services;

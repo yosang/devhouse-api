@@ -24,6 +24,7 @@ public class DatabaseContext : DbContext
                 mb.Entity<Team>().Property(p => p.Name).IsRequired();
                 mb.Entity<Developer>().Property(p => p.Firstname).IsRequired();
                 mb.Entity<Developer>().Property(p => p.Lastname).IsRequired();
+                mb.Entity<Developer>().HasIndex(p => p.Email).IsUnique();
                 mb.Entity<Role>().Property(p => p.Name).IsRequired();
 
                 // Relationships

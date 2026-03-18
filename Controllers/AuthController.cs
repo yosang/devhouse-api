@@ -1,18 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using devhouse.Services;
+using devhouse.DTOs;
 
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-    public TokenService _tokenService { get; set; }
+    public AuthService _service { get; set; }
 
-    public AuthController(TokenService ts) => _tokenService = ts;
+    public AuthController(AuthService service) => _service = service;
 
     [HttpPost]
-    public ActionResult<string> Login()
+    public async Task<ActionResult<string>> Login(LoginDTO loginDTO)
     {
-        return Ok(_tokenService.Generate("testUser"));
+        var (authenticated, token) = await _service.Authenticate(loginDTO.Email, loginDTO.Password);
+        if (!authenticated) return Unauthorized();
+
+        return Ok(token);
     }
 }

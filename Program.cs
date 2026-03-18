@@ -8,6 +8,8 @@ builder.Services.AddDatatabaseConfig(builder.Configuration)
                 .AddServices()
                 .AddControllers();
 
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello world");

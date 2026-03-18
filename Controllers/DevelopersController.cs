@@ -41,12 +41,16 @@ public class DevelopersController : ControllerBase
     /// <summary>Create a new developer</summary>
     /// <param name="developer"></param>
     /// <response code="201">Resource created</response>
+    /// <response code="403">Missing required permissions</response>
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(Developer), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Developer>> Create(Developer developer)
     {
-        var newDev = await _service.Create(developer);
+        var (newDev, unauthorized) = await _service.Create(developer);
+        if (unauthorized) return Forbid();
+
         return CreatedAtAction(nameof(Get), new { id = newDev.Id }, newDev);
     }
 
@@ -57,13 +61,14 @@ public class DevelopersController : ControllerBase
     /// <response code="404">Resource not found by id</response>
     /// <response code="400">Route path Id and Request body Id mismatch</response>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPut("{id}")]
     [Authorize]
     public async Task<ActionResult> Update(int id, Developer developer)
     {
-        var (notFound, badRequest) = await _service.Update(id, developer);
+        var (notFound, badRequest, unauthorized) = await _service.Update(id, developer);
         if (notFound) return NotFound();
         if (badRequest) return BadRequest(new ProblemDetails()
         {
@@ -72,6 +77,7 @@ public class DevelopersController : ControllerBase
             Status = StatusCodes.Status400BadRequest,
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
         });
+        if (unauthorized) return Forbid();
 
         return NoContent();
     }
@@ -86,8 +92,9 @@ public class DevelopersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {
-        var success = await _service.Delete(id);
-        if (!success) return NotFound();
+        var (notFound, unauthorized) = await _service.Delete(id);
+        if (notFound) return NotFound();
+        if (unauthorized) return Forbid();
 
         return NoContent();
     }
