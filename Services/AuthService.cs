@@ -32,6 +32,10 @@ public class AuthService
         return (authenticated: false, token: string.Empty);
     }
 
+    // Takes a model entity and checks it up against the token claims
+    // If it is an admin, return early with true, as Admins can modify everything
+    // If the entity has implemented the interface ITeamedUp, check that both teamId and entity teamId match, TeamLeads can only modify developerss from within their teams
+    // If the entity has implemented the interface ISelfModify, check the developer id, developers can only modify themselves
     public bool isAuthorized<T>(T entity)
     {
         var claims = GetClaims;
@@ -39,15 +43,20 @@ public class AuthService
 
         if (isAdmin()) return true; // Admins can alter everything
 
-        if (entity is ITeamedUp t)
-            return t.TeamId == claims.teamId && role == RolesENUM.TeamLead; // Teamleads can only alter within of their team
+        bool isTeamLead = entity is ITeamedUp t && entity is IRoledUp r ?
+                            t.TeamId == claims.teamId &&
+                            role == RolesENUM.TeamLead &&
+                            (RolesENUM)r.RoleId < RolesENUM.TeamLead : false;
 
-        if (entity is ISelfModify s)
-            return s.Id == claims.developerId && role == RolesENUM.Developer; // Developers can only modify themselves
+        bool isDev = entity is ISelfModify s ?
+                    s.Id == claims.developerId &&
+                    role == RolesENUM.Developer : false;
 
-        return false;
+        return isTeamLead || isDev;
     }
 
+    // This method instantly checks if the roleId from the token matches with the Admin enum
+    // We are using this to prevent teamleads, who some permissions from altering certain properties, like RoleId and TeamId (admin protected)
     public bool isAdmin() => (RolesENUM)GetClaims.roleId == RolesENUM.Admin;
 
     public enum RolesENUM

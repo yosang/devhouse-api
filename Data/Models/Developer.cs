@@ -2,7 +2,7 @@ using devhouse.Interfaces;
 
 namespace devhouse.Models;
 
-public class Developer : ITeamedUp, ISelfModify
+public class Developer : ITeamedUp, IRoledUp, ISelfModify
 {
     public int Id { get; set; }
 
