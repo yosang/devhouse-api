@@ -63,45 +63,45 @@ public class ProjectTypeService
                                     })
                                     .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(ProjectType project, bool unauthorized)> Create(CreateProjectTypeDTO dto)
+    public async Task<ServiceResult<ProjectType>> Create(CreateProjectTypeDTO dto)
     {
         var pt = new ProjectType
         {
             Name = dto.Name
         };
 
-        if (!_service.isAdmin()) return (null!, true);
+        if (!_service.isAdmin()) return ServiceResult<ProjectType>.Unauthorized();
 
         _ctx.ProjectTypes.Add(pt);
         await _ctx.SaveChangesAsync();
-        return (pt, false);
+        return ServiceResult<ProjectType>.WithData(pt);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, UpdateProjectTypeDTO pt)
+    public async Task<ServiceResult> Update(int id, UpdateProjectTypeDTO pt)
     {
-        if (id != pt.Id) return (false, true, false);
+        if (id != pt.Id) return ServiceResult.Badrequest();
 
-        if (!_service.isAdmin()) return (false, false, true);
+        if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.ProjectTypes.FindAsync(id);
-        if (entity == null) return (true, false, false);
+        if (entity == null) return ServiceResult.Notfound();
 
         entity.Name = pt.Name;
 
         await _ctx.SaveChangesAsync();
-        return (false, false, false);
+        return ServiceResult.Success();
     }
 
-    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
+    public async Task<ServiceResult> Delete(int id)
     {
-        if (!_service.isAdmin()) return (false, true);
+        if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.ProjectTypes.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return ServiceResult.Notfound();
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return ServiceResult.Success();
     }
 }

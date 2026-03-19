@@ -50,10 +50,10 @@ public class DevelopersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Developer>> Create(CreateDeveloperDTO developer)
     {
-        var (newDev, unauthorized) = await _service.Create(developer);
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Create(developer);
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
-        return CreatedAtAction(nameof(Get), new { id = newDev.Id }, newDev);
+        return CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result.Data);
     }
 
     /// <summary>Update a developer</summary>
@@ -71,10 +71,10 @@ public class DevelopersController : ControllerBase
     [Authorize]
     public async Task<ActionResult> Update(int id, UpdateDeveloperDTO developer)
     {
-        var (notFound, badRequest, unauthorized) = await _service.Update(id, developer);
-        if (notFound) return NotFound(WhenNotFound(developer.Id));
-        if (badRequest) return BadRequest(WhenIdMismatch(id, developer.Id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Update(id, developer);
+        if (result.notFound) return NotFound(WhenNotFound(developer.Id));
+        if (result.badRequest) return BadRequest(WhenIdMismatch(id, developer.Id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
@@ -91,9 +91,9 @@ public class DevelopersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {
-        var (notFound, unauthorized) = await _service.Delete(id);
-        if (notFound) return NotFound(WhenNotFound(id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Delete(id);
+        if (result.notFound) return NotFound(WhenNotFound(id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }

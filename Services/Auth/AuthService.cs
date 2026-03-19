@@ -83,4 +83,6 @@ public class AuthService
         TeamLead,
         Admin
     }
+
+    public string HashedPassword(string password) => new PasswordHasher<object>().HashPassword(new object(), password);
 }

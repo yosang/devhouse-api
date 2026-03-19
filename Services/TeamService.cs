@@ -12,7 +12,6 @@ public class TeamService
     public AuthService _service { get; set; }
     public TeamService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    // ! Here we need DTO's as well
     public async Task<IEnumerable<ReadTeamDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
@@ -33,7 +32,6 @@ public class TeamService
                                 .ToListAsync();
     }
 
-    // ! Replace with DTO's
     public async Task<ReadTeamDTO> GetOne(int id) => await _ctx.Teams.AsNoTracking()
                                                             .Where(t => t.Id == id)
                                                             .Include(p => p.Projects)
@@ -47,46 +45,46 @@ public class TeamService
                                                             })
                                                             .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Team, bool unauthorized)> Create(CreateTeamDTO dto)
+    public async Task<ServiceResult<Team>> Create(CreateTeamDTO dto)
     {
         var team = new Team
         {
             Name = dto.Name
         };
 
-        if (!_service.isAdmin()) return (null!, true);
+        if (!_service.isAdmin()) return ServiceResult<Team>.Unauthorized();
 
         _ctx.Teams.Add(team);
         await _ctx.SaveChangesAsync();
 
-        return (team, false);
+        return ServiceResult<Team>.WithData(team);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, UpdateTeamDTO team)
+    public async Task<ServiceResult> Update(int id, UpdateTeamDTO team)
     {
-        if (id != team.Id) return (false, true, false);
+        if (id != team.Id) return ServiceResult.Badrequest();
 
-        if (!_service.isAdmin()) return (false, false, true);
+        if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.Teams.FindAsync(id);
-        if (entity == null) return (true, false, false);
+        if (entity == null) return ServiceResult.Notfound();
 
         entity.Name = team.Name;
 
         await _ctx.SaveChangesAsync();
-        return (false, false, false);
+        return ServiceResult.Success();
     }
 
-    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
+    public async Task<ServiceResult> Delete(int id)
     {
-        if (!_service.isAdmin()) return (false, true);
+        if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.Teams.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return ServiceResult.Notfound();
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return ServiceResult.Success();
     }
 }

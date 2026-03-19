@@ -26,46 +26,46 @@ public class RoleService
                                                                 .Where(r => r.Id == id)
                                                                 .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Role role, bool unauthorized)> Create(CreateRoleDTO dto)
+    public async Task<ServiceResult<Role>> Create(CreateRoleDTO dto)
     {
         var role = new Role
         {
             Name = dto.Name
         };
 
-        if (!_service.isAdmin()) return (null!, true);
+        if (!_service.isAdmin()) return ServiceResult<Role>.Unauthorized();
 
         _ctx.Roles.Add(role);
         await _ctx.SaveChangesAsync();
 
-        return (role, false);
+        return ServiceResult<Role>.WithData(role);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Role role)
+    public async Task<ServiceResult> Update(int id, Role role)
     {
-        if (id != role.Id) return (false, true, false);
+        if (id != role.Id) return ServiceResult.Badrequest();
 
-        if (!_service.isAdmin()) return (false, false, true);
+        if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.Roles.FindAsync(id);
-        if (entity == null) return (true, false, false);
+        if (entity == null) return ServiceResult.Notfound();
 
         entity.Name = role.Name;
 
         await _ctx.SaveChangesAsync();
-        return (false, false, false);
+        return ServiceResult.Success();
     }
 
-    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
-    {
-        if (!_service.isAdmin()) return (false, true);
+    public async Task<ServiceResult> Delete(int id)
+{
+        if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.Roles.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return ServiceResult.Notfound();
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return ServiceResult.Success();
     }
 }

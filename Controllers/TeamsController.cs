@@ -49,10 +49,10 @@ public class TeamsController : ControllerBase
     [ProducesResponseType(typeof(Team), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Team>> Create(CreateTeamDTO team)
     {
-        var (newTeam, unauthorized) = await _service.Create(team);
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Create(team);
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
-        return CreatedAtAction(nameof(Get), new { id = newTeam.Id }, newTeam);
+        return CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result);
     }
 
     /// <summary>Update a team</summary>
@@ -70,10 +70,10 @@ public class TeamsController : ControllerBase
     [Authorize]
     public async Task<ActionResult> Update(int id, UpdateTeamDTO team)
     {
-        var (notfound, badRequest, unauthorized) = await _service.Update(id, team);
-        if (notfound) return NotFound(WhenNotFound(id));
-        if (badRequest) return BadRequest(WhenIdMismatch(id, team.Id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Update(id, team);
+        if (result.notFound) return NotFound(WhenNotFound(id));
+        if (result.badRequest) return BadRequest(WhenIdMismatch(id, team.Id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
@@ -90,9 +90,9 @@ public class TeamsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {
-        var (notfound, unauthorized) = await _service.Delete(id);
-        if (notfound) return NotFound(WhenNotFound(id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Delete(id);
+        if (result.notFound) return NotFound(WhenNotFound(id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }

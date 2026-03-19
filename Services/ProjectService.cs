@@ -48,7 +48,7 @@ public class ProjectService
                                                                     })
                                                                     .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Project project, bool unauthorized)> Create(CreateProjectDTO project)
+    public async Task<ServiceResult<Project>> Create(CreateProjectDTO project)
     {
         var proj = new Project
         {
@@ -57,22 +57,22 @@ public class ProjectService
             TeamId = project.TeamId
         };
 
-        if (!_service.CanCreateModifyDeleteProjects(proj)) return (null!, true);
+        if (!_service.CanCreateModifyDeleteProjects(proj)) return ServiceResult<Project>.Unauthorized();
 
         _ctx.Projects.Add(proj);
         await _ctx.SaveChangesAsync();
 
-        return (proj, false);
+        return ServiceResult<Project>.WithData(proj);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Project project)
+    public async Task<ServiceResult> Update(int id, Project project)
     {
-        if (id != project.Id) return (false, true, false);
+        if (id != project.Id) return ServiceResult.Badrequest();
 
         var entity = await _ctx.Projects.FindAsync(id);
-        if (entity == null) return (true, false, false);
+        if (entity == null) return ServiceResult.Notfound();
 
-        if (!_service.CanCreateModifyDeleteProjects(entity)) return (false, false, true);
+        if (!_service.CanCreateModifyDeleteProjects(entity)) return ServiceResult.Unauthorized();
 
         entity.Name = project.Name;
         entity.ProjectTypeId = project.ProjectTypeId;
@@ -84,19 +84,19 @@ public class ProjectService
 
         await _ctx.SaveChangesAsync();
 
-        return (false, false, false);
+        return ServiceResult.Success();
     }
 
-    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
+    public async Task<ServiceResult> Delete(int id)
     {
         var entity = await _ctx.Projects.FindAsync(id);
-        if (entity == null) return (true, false);
+        if (entity == null) return ServiceResult.Notfound();
 
-        if (!_service.CanCreateModifyDeleteProjects(entity)) return (false, true);
+        if (!_service.CanCreateModifyDeleteProjects(entity)) return ServiceResult.Unauthorized();
 
         _ctx.Remove(entity);
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return ServiceResult.Success();
     }
 }

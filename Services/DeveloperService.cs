@@ -1,8 +1,8 @@
 using devhouse.Context;
 using devhouse.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using devhouse.DTOs;
+
 namespace devhouse.Services;
 
 public class DeveloperService
@@ -50,40 +50,40 @@ public class DeveloperService
                                 })
                                 .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Developer newDev, bool unauthorized)> Create(CreateDeveloperDTO developer)
+    public async Task<ServiceResult<Developer>> Create(CreateDeveloperDTO developer)
     {
         var dev = new Developer
         {
             Firstname = developer.Firstname,
             Lastname = developer.Lastname,
             Email = developer.Email,
-            Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : HashedPassword(developer.Password),
+            Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : _service.HashedPassword(developer.Password),
             TeamId = developer.TeamId,
             RoleId = developer.RoleId
         };
 
 
-        if (!_service.CanCreateDeleteDevelopers(dev)) return (null!, true);
+        if (!_service.CanCreateDeleteDevelopers(dev)) return ServiceResult<Developer>.Unauthorized();
 
         _ctx.Developers.Add(dev);
 
         await _ctx.SaveChangesAsync();
-        return (dev, false);
+        return ServiceResult<Developer>.WithData(dev);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, UpdateDeveloperDTO developer)
+    public async Task<ServiceResult> Update(int id, UpdateDeveloperDTO developer)
     {
-        if (id != developer.Id) return (false, true, false);
+        if (id != developer.Id) return ServiceResult<Developer>.Badrequest();
 
         var entity = await _ctx.Developers.FindAsync(id);
-        if (entity == null) return (true, false, false);
+        if (entity == null) return ServiceResult<Developer>.Notfound();
 
-        if (!_service.CanModifyDevelopers(entity)) return (false, false, true);
+        if (!_service.CanModifyDevelopers(entity)) return ServiceResult<Developer>.Unauthorized();
 
         entity.Firstname = developer.Firstname;
         entity.Lastname = developer.Lastname;
         entity.Email = developer.Email;
-        entity.Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : HashedPassword(developer.Password);
+        entity.Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : _service.HashedPassword(developer.Password);
 
         if (_service.isAdmin())
         {
@@ -92,28 +92,20 @@ public class DeveloperService
         }
 
         await _ctx.SaveChangesAsync();
-        return (false, false, false);
+        return ServiceResult.Success();
     }
 
-    public async Task<(bool notFound, bool unauthorized)> Delete(int id)
+    public async Task<ServiceResult> Delete(int id)
     {
         var developer = await _ctx.Developers.FindAsync(id);
-        if (developer == null) return (true, false);
+        if (developer == null) return ServiceResult.Notfound();
 
-        if (!_service.CanCreateDeleteDevelopers(developer)) return (false, true);
+        if (!_service.CanCreateDeleteDevelopers(developer)) return ServiceResult.Unauthorized();
 
         _ctx.Remove(developer);
 
         await _ctx.SaveChangesAsync();
-        return (false, false);
+        return ServiceResult.Success();
     }
-
-    // ! We probably want to move this out to AuthService
-    // Helper method for password hashing upon creation
-
-    // PasswordHasher doesnt really need a type, it doesnt do anything with it, its only there for safety
-    // But instead of writing an interface for my DTO's, ill skip that and just pass an empty object, the hashing algorithm is what we want for now
-    public string HashedPassword(string password) => new PasswordHasher<object>().HashPassword(new object(), password);
-
 
 }

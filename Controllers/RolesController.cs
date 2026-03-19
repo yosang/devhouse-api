@@ -49,10 +49,10 @@ public class RolesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Role>> Create(CreateRoleDTO role)
     {
-        var (newRole, unauthorized) = await _service.Create(role);
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Create(role);
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
-        return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
+        return CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result.Data);
     }
 
     /// <summary>Update a role</summary>
@@ -70,10 +70,10 @@ public class RolesController : ControllerBase
     [Authorize]
     public async Task<ActionResult> Update(int id, Role role)
     {
-        var (notFound, badRequest, unauthorized) = await _service.Update(id, role);
-        if (notFound) return NotFound(WhenNotFound(id));
-        if (badRequest) return BadRequest(WhenIdMismatch(id, role.Id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Update(id, role);
+        if (result.notFound) return NotFound(WhenNotFound(id));
+        if (result.badRequest) return BadRequest(WhenIdMismatch(id, role.Id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
@@ -90,9 +90,9 @@ public class RolesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Remove(int id)
     {
-        var (notfound, unauthorized) = await _service.Delete(id);
-        if (notfound) return NotFound(WhenNotFound(id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        var result = await _service.Delete(id);
+        if (result.notFound) return NotFound(WhenNotFound(id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
