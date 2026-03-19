@@ -22,7 +22,9 @@ public class RoleService
                                 .ToListAsync();
     }
 
-    public async Task<Role> GetOne(int id) => await _ctx.Roles.Where(r => r.Id == id).FirstOrDefaultAsync() ?? null!;
+    public async Task<Role> GetOne(int id) => await _ctx.Roles.AsNoTracking()
+                                                                .Where(r => r.Id == id)
+                                                                .FirstOrDefaultAsync() ?? null!;
 
     public async Task<(Role role, bool unauthorized)> Create(CreateRoleDTO dto)
     {

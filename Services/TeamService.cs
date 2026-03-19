@@ -22,7 +22,9 @@ public class TeamService
                                 .ToListAsync();
     }
 
-    public async Task<Team> GetOne(int id) => await _ctx.Teams.Where(t => t.Id == id).FirstOrDefaultAsync() ?? null!;
+    public async Task<Team> GetOne(int id) => await _ctx.Teams.AsNoTracking()
+                                                            .Where(t => t.Id == id)
+                                                            .FirstOrDefaultAsync() ?? null!;
 
     public async Task<(Team, bool unauthorized)> Create(Team team)
     {
