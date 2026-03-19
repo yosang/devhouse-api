@@ -26,7 +26,6 @@ public class DeveloperService
                                         Id = d.Id,
                                         Firstname = d.Firstname,
                                         Lastname = d.Lastname,
-                                        Email = d.Email,
                                         Team = new TeamDTO { Id = d.TeamId, Name = d.Team!.Name },
                                         Projects = d.Team.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name })
                                     })
@@ -42,7 +41,6 @@ public class DeveloperService
                                     Id = d.Id,
                                     Firstname = d.Firstname,
                                     Lastname = d.Lastname,
-                                    Email = d.Email,
                                     Team = new TeamDTO { Id = d.TeamId, Name = d.Team!.Name },
                                     Projects = d.Team.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name })
                                 })
