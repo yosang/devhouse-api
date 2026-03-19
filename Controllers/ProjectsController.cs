@@ -20,7 +20,7 @@ public class ProjectsController : ControllerBase
     /// <param name="pageSize"></param>
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<ReadProjectDTO>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ReadProjectDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
@@ -31,7 +31,7 @@ public class ProjectsController : ControllerBase
     /// <response code="200">Single resource retrieved</response>
     /// <response code="404">Resource not found</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ReadProjectDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ReadProjectDTO>> Get(int id)
     {
