@@ -1,4 +1,5 @@
 using devhouse.Context;
+using devhouse.DTOs;
 using devhouse.Models;
 using devhouse.Services;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +24,13 @@ public class RoleService
 
     public async Task<Role> GetOne(int id) => await _ctx.Roles.Where(r => r.Id == id).FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Role role, bool unauthorized)> Create(Role role)
+    public async Task<(Role role, bool unauthorized)> Create(CreateRoleDTO dto)
     {
+        var role = new Role
+        {
+            Name = dto.Name
+        };
+
         if (!_service.isAdmin()) return (null!, true);
 
         _ctx.Roles.Add(role);

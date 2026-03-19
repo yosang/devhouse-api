@@ -13,6 +13,15 @@ public class ProblemFactoryService
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
         };
 
+    public static ProblemDetails BadRequestIdMismatch(int param, int targetId)
+        => new ProblemDetails
+        {
+            Title = "Id mismatch",
+            Detail = $"There is a mismatch in the route path ({param}) Id and Request body Id ({targetId})",
+            Status = StatusCodes.Status400BadRequest,
+            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
+        };
+
     public static ProblemDetails NotFound(int value)
         => new ProblemDetails
         {

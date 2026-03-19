@@ -1,4 +1,5 @@
 using devhouse.Context;
+using devhouse.DTOs;
 using devhouse.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,27 +13,56 @@ public class ProjectService
 
     public ProjectService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<List<Project>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<IEnumerable<object>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
+        // ! Replace with a dTO
         return await _ctx.Projects.AsNoTracking()
-                            .OrderBy(p => p.Id)
-                            .Skip((page - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToListAsync();
+                                    .OrderBy(p => p.Id)
+                                    .Include(pt => pt.ProjectType)
+                                    .Include(pt => pt.Team)
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .Select(p => new
+                                    {
+                                        p.Id,
+                                        p.Name,
+                                        p.ProjectType,
+                                        Team = new { p.TeamId, p.Team!.Name }
+                                    })
+                                    .ToListAsync();
     }
 
-    public async Task<Project> GetOne(int id) => await _ctx.Projects.Where(p => p.Id == id).FirstOrDefaultAsync() ?? null!;
+    // ! Replace with a dTO
+    public async Task<object> GetOne(int id) => await _ctx.Projects.AsNoTracking()
+                                                                    .Where(p => p.Id == id)
+                                                                    .Include(pt => pt.ProjectType)
+                                                                    .Include(pt => pt.Team)
+                                                                    .Select(p => new
+                                                                    {
+                                                                        p.Id,
+                                                                        p.Name,
+                                                                        p.ProjectType,
+                                                                        Team = new { p.TeamId, p.Team!.Name }
+                                                                    })
+                                                                    .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Project project, bool unauthorized)> Create(Project project)
+    public async Task<(Project project, bool unauthorized)> Create(CreateProjectDTO project)
     {
-        if (!_service.CanCreateModifyDeleteProjects(project)) return (null!, true);
+        var proj = new Project
+        {
+            Name = project.Name,
+            ProjectTypeId = project.ProjectTypeId,
+            TeamId = project.TeamId
+        };
 
-        _ctx.Projects.Add(project);
+        if (!_service.CanCreateModifyDeleteProjects(proj)) return (null!, true);
+
+        _ctx.Projects.Add(proj);
         await _ctx.SaveChangesAsync();
 
-        return (project, false);
+        return (proj, false);
     }
 
     public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Project project)

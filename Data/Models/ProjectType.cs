@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace devhouse.Models;
 
 public class ProjectType
@@ -9,6 +7,5 @@ public class ProjectType
     public string? Name { get; set; }
 
     // Navigation properties
-    [JsonIgnore]
     public virtual IEnumerable<Project>? Projects { get; set; }
 }

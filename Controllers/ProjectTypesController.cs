@@ -2,6 +2,7 @@ using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using devhouse.DTOs;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -18,10 +19,10 @@ public class ProjectTypesController : ControllerBase
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ProjectType>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<ProjectType>>> Get(
+    public async Task<ActionResult<IEnumerable<object>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
-        => await _service.GetAll(page, pageSize);
+        => Ok(await _service.GetAll(page, pageSize));
 
 
     /// <summary> Retrieve a single project type </summary>
@@ -31,7 +32,7 @@ public class ProjectTypesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProjectType), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProjectType>> Get(int id)
+    public async Task<ActionResult<object>> Get(int id)
     {
         var ptype = await _service.GetOne(id);
         if (ptype == null) return NotFound();
@@ -46,10 +47,10 @@ public class ProjectTypesController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(ProjectType), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ProjectType>> Create(ProjectType pt)
+    public async Task<ActionResult<ProjectType>> Create(CreateProjectTypeDTO pt)
     {
         var (newPt, unauthorized) = await _service.Create(pt);
-        if (unauthorized) return Forbid();
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newPt.Id }, newPt);
     }
@@ -67,18 +68,13 @@ public class ProjectTypesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, ProjectType projecttype)
+    public async Task<ActionResult> Update(int id, UpdateProjectTypeDTO projecttype)
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, projecttype);
-        if (notFound) return NotFound();
-        if (badRequest) return BadRequest(new ProblemDetails()
-        {
-            Title = "Id mismatch",
-            Detail = $"There is a mismatch in the route path ({id}) Id and Request body Id ({projecttype.Id})",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
-        });
-        if (unauthorized) return Forbid();
+
+        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, projecttype.Id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }

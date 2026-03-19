@@ -2,6 +2,7 @@ using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using devhouse.DTOs;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -18,10 +19,11 @@ public class ProjectsController : ControllerBase
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Project>>> Get(
+    // ! Returning an object Implement DTO's ova here
+    public async Task<ActionResult<IEnumerable<object>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
-        => await _service.GetAll(page, pageSize);
+        => Ok(await _service.GetAll(page, pageSize));
 
     /// <summary> Retrieve a single project </summary>
     /// <param name="id"></param>
@@ -30,10 +32,11 @@ public class ProjectsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Project>> Get(int id)
+    // ! Returning an object Implement DTO's ova here
+    public async Task<ActionResult<object>> Get(int id)
     {
         var proj = await _service.GetOne(id);
-        if (proj == null) return NotFound();
+        if (proj == null) return NotFound(ProblemFactoryService.NotFound(id));
         return proj;
     }
 
@@ -45,11 +48,11 @@ public class ProjectsController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(Project), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<Project>> Create(Project project)
+    public async Task<ActionResult<Project>> Create(CreateProjectDTO project)
     {
         var (newProject, unauthorized) = await _service.Create(project);
 
-        if (unauthorized) return Forbid();
+        if (unauthorized) return StatusCode(StatusCodes.Status404NotFound, ProblemFactoryService.Forbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newProject.Id }, newProject);
     }
@@ -70,15 +73,9 @@ public class ProjectsController : ControllerBase
     public async Task<ActionResult> Update(int id, Project project)
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, project);
-        if (notFound) return NotFound();
-        if (badRequest) return BadRequest(new ProblemDetails()
-        {
-            Title = "Id mismatch",
-            Detail = $"There is a mismatch in the route path ({id}) Id and Request body Id ({project.Id})",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
-        });
-        if (unauthorized) return Forbid();
+        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, project.Id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }
@@ -96,8 +93,8 @@ public class ProjectsController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var (notFound, unauthorized) = await _service.Delete(id);
-        if (notFound) return NotFound();
-        if (unauthorized) return Forbid();
+        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }

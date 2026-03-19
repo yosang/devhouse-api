@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using devhouse.Models;
 using Microsoft.AspNetCore.Authorization;
+using devhouse.DTOs;
+using devhouse.Services;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -32,7 +34,7 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<Role>> Get(int id)
     {
         var role = await _service.GetOne(id);
-        if (role == null) return NotFound();
+        if (role == null) return NotFound(ProblemFactoryService.NotFound(id));
         return role;
     }
 
@@ -44,10 +46,10 @@ public class RolesController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(Role), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<Role>> Create(Role role)
+    public async Task<ActionResult<Role>> Create(CreateRoleDTO role)
     {
         var (newRole, unauthorized) = await _service.Create(role);
-        if (unauthorized) return Forbid();
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newRole.Id }, newRole);
     }
@@ -68,15 +70,9 @@ public class RolesController : ControllerBase
     public async Task<ActionResult> Update(int id, Role role)
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, role);
-        if (notFound) return NotFound();
-        if (badRequest) return BadRequest(new ProblemDetails()
-        {
-            Title = "Id mismatch",
-            Detail = $"There is a mismatch in the route path ({id}) Id and Request body Id ({role.Id})",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
-        });
-        if (unauthorized) return Forbid();
+        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, role.Id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }
@@ -94,8 +90,8 @@ public class RolesController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var (notfound, unauthorized) = await _service.Delete(id);
-        if (notfound) return NotFound();
-        if (unauthorized) return Forbid();
+        if (notfound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }

@@ -73,7 +73,7 @@ public class DevelopersController : ControllerBase
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, developer);
         if (notFound) return NotFound(ProblemFactoryService.NotFound(developer.Id));
-        if (badRequest) return BadRequest(ProblemFactoryService.BadRequest("Id mismatch", $"There is a mismatch in the route path ({id}) Id and Request body Id ({developer.Id})"));
+        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, developer.Id));
         if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
