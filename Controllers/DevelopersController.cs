@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Authorization;
+using devhouse.DTOs;
+using Mysqlx.Crud;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -17,23 +19,23 @@ public class DevelopersController : ControllerBase
     /// <param name="pageSize"></param>
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<Developer>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Developer>>> Get(
+    [ProducesResponseType(typeof(IEnumerable<ReadDeveloperDTO>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ReadDeveloperDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
-        => await _service.GetAll(page, pageSize);
+        => Ok(await _service.GetAll(page, pageSize)); // When we are not returning an ASP.NET Core entity like Developer, but a DTO, we must explicitly wrap it
 
     /// <summary> Retrieve a single developer </summary>
     /// <param name="id"></param>
     /// <response code="200">Single resource retrieved</response>
     /// <response code="404">Resource not found</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Developer), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ReadDeveloperDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Developer>> Get(int id)
+    public async Task<ActionResult<ReadDeveloperDTO>> Get(int id)
     {
         var dev = await _service.GetOne(id);
-        if (dev == null) return NotFound();
+        if (dev == null) return NotFound(ProblemFactoryService.NotFound(id));
         return dev;
     }
 
@@ -46,10 +48,10 @@ public class DevelopersController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(Developer), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<Developer>> Create(Developer developer)
+    public async Task<ActionResult<Developer>> Create(CreateDeveloperDTO developer)
     {
         var (newDev, unauthorized) = await _service.Create(developer);
-        if (unauthorized) return Forbid();
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newDev.Id }, newDev);
     }
@@ -67,18 +69,12 @@ public class DevelopersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, Developer developer)
+    public async Task<ActionResult> Update(int id, UpdateDeveloperDTO developer)
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, developer);
-        if (notFound) return NotFound();
-        if (badRequest) return BadRequest(new ProblemDetails()
-        {
-            Title = "Id mismatch",
-            Detail = $"There is a mismatch in the route path ({id}) Id and Request body Id ({developer.Id})",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
-        });
-        if (unauthorized) return Forbid();
+        if (notFound) return NotFound(ProblemFactoryService.NotFound(developer.Id));
+        if (badRequest) return BadRequest(ProblemFactoryService.BadRequest("Id mismatch", $"There is a mismatch in the route path ({id}) Id and Request body Id ({developer.Id})"));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }
@@ -96,8 +92,8 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var (notFound, unauthorized) = await _service.Delete(id);
-        if (notFound) return NotFound();
-        if (unauthorized) return Forbid();
+        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }

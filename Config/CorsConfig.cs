@@ -17,7 +17,7 @@ public static class CorsConfig
             {
                 policy.AllowAnyMethod()
                      .AllowAnyHeader()
-                     .WithOrigins(
+                     .WithOrigins( // These values should be in appsettings.json, for simplicity during setup we leave it hardcoded.
                          "https://myfrontend.com",
                          "https://admin.myfrontend.com"
                      );

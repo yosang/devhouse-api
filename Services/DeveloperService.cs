@@ -2,6 +2,7 @@ using devhouse.Context;
 using devhouse.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using devhouse.DTOs;
 namespace devhouse.Services;
 
 public class DeveloperService
@@ -11,32 +12,66 @@ public class DeveloperService
 
     public DeveloperService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<List<Developer>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<IEnumerable<ReadDeveloperDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
         return await _ctx.Developers.AsNoTracking()
                                     .OrderBy(e => e.Id)
+                                    .Include(e => e.Team)
                                     .Skip((page - 1) * pageSize)
                                     .Take(pageSize)
+                                    .Select(d => new ReadDeveloperDTO
+                                    {
+                                        Id = d.Id,
+                                        Firstname = d.Firstname,
+                                        Lastname = d.Lastname,
+                                        Email = d.Email,
+                                        TeamId = d.TeamId,
+                                        TeamName = d.Team!.Name,
+                                        Projects = d.Team.Projects!.Select(p => p.Name).ToArray()! // Create a ReadProjectsDTO to gain some more insights
+                                    })
                                     .ToListAsync();
     }
 
-    public async Task<Developer> GetOne(int id) => await _ctx.Developers.Where(d => d.Id == id).FirstOrDefaultAsync() ?? null!;
+    public async Task<ReadDeveloperDTO> GetOne(int id)
+        => await _ctx.Developers.AsNoTracking()
+                                .Where(d => d.Id == id)
+                                .Include(d => d.Team)
+                                .Select(d => new ReadDeveloperDTO
+                                {
+                                    Id = d.Id,
+                                    Firstname = d.Firstname,
+                                    Lastname = d.Lastname,
+                                    Email = d.Email,
+                                    TeamId = d.TeamId,
+                                    TeamName = d.Team!.Name,
+                                    Projects = d.Team.Projects!.Select(p => p.Name).ToArray()!
+                                })
+                                .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Developer newDev, bool unauthorized)> Create(Developer developer)
+    public async Task<(Developer newDev, bool unauthorized)> Create(CreateDeveloperDTO developer)
     {
-        if (!_service.CanCreateDeleteDevelopers(developer)) return (null!, true);
+        var dev = new Developer
+        {
+            Firstname = developer.Firstname,
+            Lastname = developer.Lastname,
+            Email = developer.Email,
+            Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : HashedPassword(developer.Password),
+            TeamId = developer.TeamId,
+            RoleId = developer.RoleId
+        };
 
-        _ctx.Developers.Add(developer);
 
-        developer.Password = HashedPassword(developer);
+        if (!_service.CanCreateDeleteDevelopers(dev)) return (null!, true);
+
+        _ctx.Developers.Add(dev);
 
         await _ctx.SaveChangesAsync();
-        return (developer, false);
+        return (dev, false);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Developer developer)
+    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, UpdateDeveloperDTO developer)
     {
         if (id != developer.Id) return (false, true, false);
 
@@ -48,7 +83,7 @@ public class DeveloperService
         entity.Firstname = developer.Firstname;
         entity.Lastname = developer.Lastname;
         entity.Email = developer.Email;
-        entity.Password = HashedPassword(developer);
+        entity.Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : HashedPassword(developer.Password);
 
         if (_service.isAdmin())
         {
@@ -75,7 +110,10 @@ public class DeveloperService
 
     // ! We probably want to move this out to AuthService
     // Helper method for password hashing upon creation
-    public string HashedPassword(Developer developer) => new PasswordHasher<Developer>().HashPassword(developer, developer.Password!);
+
+    // PasswordHasher doesnt really need a type, it doesnt do anything with it, its only there for safety
+    // But instead of writing an interface for my DTO's, ill skip that and just pass an empty object, the hashing algorithm is what we want for now
+    public string HashedPassword(string password) => new PasswordHasher<object>().HashPassword(new object(), password);
 
 
 }
