@@ -6,7 +6,7 @@ namespace devhouse.Extensions;
 public static class DatabaseConfig
 {
 
-    public static IServiceCollection AddDatatabaseConfig(this IServiceCollection service, IConfiguration options)
+    public static IServiceCollection AddDatabaseConfig(this IServiceCollection service, IConfiguration options)
     {
         var conStr = options.GetConnectionString("Default")!;
         service.AddDbContext<DatabaseContext>(options => options.UseMySQL(conStr));

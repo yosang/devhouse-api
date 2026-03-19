@@ -2,9 +2,10 @@ using devhouse.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDatatabaseConfig(builder.Configuration)
+builder.Services.AddDatabaseConfig(builder.Configuration)
                 .AddSwaggerConfig()
                 .AddJwtConfig(builder.Configuration)
+                .AddCorsConfig()
                 .AddServices()
                 .AddControllers();
 
@@ -16,8 +17,9 @@ app.MapGet("/", () => "Visit /swagger for API documentation");
 
 
 app.UseSwaggerConfig()
+    .UseCorsConfig()
     .UseAuthConfig()
-    // Add Cors middleware
+    // Add HTTPS
     .MapControllers();
 
 app.Run();

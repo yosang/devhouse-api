@@ -52,8 +52,12 @@ public static class SwaggerConfig
 
     public static WebApplication UseSwaggerConfig(this WebApplication app)
     {
-        app.UseSwagger();
-        app.UseSwaggerUI();
+        // Swagger is currently only available to development during API testing.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         return app;
     }
