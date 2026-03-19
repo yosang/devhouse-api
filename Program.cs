@@ -15,11 +15,18 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Visit /swagger for API documentation");
 
+// With Hsts, HTTPS is strictly enforced on production environments
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
 
 app.UseSwaggerConfig()
     .UseCorsConfig()
     .UseAuthConfig()
-    // Add HTTPS
     .MapControllers();
+
 
 app.Run();
