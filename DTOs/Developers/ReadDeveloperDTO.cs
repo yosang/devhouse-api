@@ -6,7 +6,6 @@ public class ReadDeveloperDTO
     public string? Firstname { get; set; }
     public string? Lastname { get; set; }
     public string? Email { get; set; }
-    public int TeamId { get; set; }
-    public string? TeamName { get; set; }
-    public string[]? Projects { get; set; }
+    public TeamDTO? Team { get; set; }
+    public IEnumerable<ProjectDTO>? Projects { get; set; }
 }

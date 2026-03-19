@@ -21,8 +21,7 @@ public class ProjectsController : ControllerBase
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Project>), StatusCodes.Status200OK)]
-    // ! Returning an object Implement DTO's ova here
-    public async Task<ActionResult<IEnumerable<object>>> Get(
+    public async Task<ActionResult<IEnumerable<ReadProjectDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
         => Ok(await _service.GetAll(page, pageSize));
@@ -34,8 +33,7 @@ public class ProjectsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Project), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // ! Returning an object Implement DTO's ova here
-    public async Task<ActionResult<object>> Get(int id)
+    public async Task<ActionResult<ReadProjectDTO>> Get(int id)
     {
         var proj = await _service.GetOne(id);
         if (proj == null) return NotFound(WhenNotFound(id));

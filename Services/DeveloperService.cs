@@ -27,9 +27,8 @@ public class DeveloperService
                                         Firstname = d.Firstname,
                                         Lastname = d.Lastname,
                                         Email = d.Email,
-                                        TeamId = d.TeamId,
-                                        TeamName = d.Team!.Name,
-                                        Projects = d.Team.Projects!.Select(p => p.Name).ToArray()! // Create a ReadProjectsDTO to gain some more insights
+                                        Team = new TeamDTO { Id = d.TeamId, Name = d.Team!.Name },
+                                        Projects = d.Team.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name })
                                     })
                                     .ToListAsync();
     }
@@ -44,9 +43,8 @@ public class DeveloperService
                                     Firstname = d.Firstname,
                                     Lastname = d.Lastname,
                                     Email = d.Email,
-                                    TeamId = d.TeamId,
-                                    TeamName = d.Team!.Name,
-                                    Projects = d.Team.Projects!.Select(p => p.Name).ToArray()!
+                                    Team = new TeamDTO { Id = d.TeamId, Name = d.Team!.Name },
+                                    Projects = d.Team.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name })
                                 })
                                 .FirstOrDefaultAsync() ?? null!;
 

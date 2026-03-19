@@ -4,6 +4,6 @@ public class ReadProjectDTO
 {
     public int Id { get; set; }
     public string? Name { get; set; }
-    public int ProjectTypeId { get; set; }
-    public int TeamId { get; set; }
+    public string? ProjectType { get; set; }
+    public TeamDTO? Team { get; set; }
 }
