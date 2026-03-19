@@ -4,16 +4,11 @@ namespace devhouse.Services;
 
 public class ProblemFactoryService
 {
-    public static ProblemDetails BadRequest(string title, string details)
-        => new ProblemDetails
-        {
-            Title = title,
-            Detail = details,
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
-        };
-
-    public static ProblemDetails BadRequestIdMismatch(int param, int targetId)
+    /// <summary>Creates an instance of ProblemDetails describing a mismatch in input id's</summary>
+    /// <param name="param"></param>
+    /// <param name="targetId"></param>
+    /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
+    public static ProblemDetails WhenIdMismatch(int param, int targetId)
         => new ProblemDetails
         {
             Title = "Id mismatch",
@@ -22,7 +17,10 @@ public class ProblemFactoryService
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
         };
 
-    public static ProblemDetails NotFound(int value)
+    /// <summary>Creates an instance of ProblemDetails describing failure of finding search value</summary>
+    /// <param name="value"></param>
+    /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
+    public static ProblemDetails WhenNotFound(int value)
         => new ProblemDetails
         {
             Title = "Not found",
@@ -31,7 +29,9 @@ public class ProblemFactoryService
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-404-not-found"
         };
 
-    public static ProblemDetails Forbidden()
+    /// <summary>Creates an instance of ProblemDetails describing an attempt of an unauthorized operation</summary>
+    /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
+    public static ProblemDetails WhenForbidden()
         => new ProblemDetails
         {
             Title = "Unauthorized",

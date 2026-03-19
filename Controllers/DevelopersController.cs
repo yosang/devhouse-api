@@ -3,7 +3,7 @@ using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Authorization;
 using devhouse.DTOs;
-using Mysqlx.Crud;
+using static devhouse.Services.ProblemFactoryService;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -35,7 +35,7 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult<ReadDeveloperDTO>> Get(int id)
     {
         var dev = await _service.GetOne(id);
-        if (dev == null) return NotFound(ProblemFactoryService.NotFound(id));
+        if (dev == null) return NotFound(WhenNotFound(id));
         return dev;
     }
 
@@ -51,7 +51,7 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult<Developer>> Create(CreateDeveloperDTO developer)
     {
         var (newDev, unauthorized) = await _service.Create(developer);
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newDev.Id }, newDev);
     }
@@ -72,9 +72,9 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult> Update(int id, UpdateDeveloperDTO developer)
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, developer);
-        if (notFound) return NotFound(ProblemFactoryService.NotFound(developer.Id));
-        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, developer.Id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
+        if (notFound) return NotFound(WhenNotFound(developer.Id));
+        if (badRequest) return BadRequest(WhenIdMismatch(id, developer.Id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
@@ -92,8 +92,8 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var (notFound, unauthorized) = await _service.Delete(id);
-        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
+        if (notFound) return NotFound(WhenNotFound(id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }

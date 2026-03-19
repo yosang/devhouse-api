@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using devhouse.DTOs;
 
+using static devhouse.Services.ProblemFactoryService;
+
 [ApiController]
 [Route("/api/[controller]")]
 [Produces("application/json")]
@@ -35,7 +37,7 @@ public class ProjectTypesController : ControllerBase
     public async Task<ActionResult<object>> Get(int id)
     {
         var ptype = await _service.GetOne(id);
-        if (ptype == null) return NotFound();
+        if (ptype == null) return NotFound(WhenNotFound(id));
         return ptype;
     }
 
@@ -50,7 +52,7 @@ public class ProjectTypesController : ControllerBase
     public async Task<ActionResult<ProjectType>> Create(CreateProjectTypeDTO pt)
     {
         var (newPt, unauthorized) = await _service.Create(pt);
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newPt.Id }, newPt);
     }
@@ -72,9 +74,10 @@ public class ProjectTypesController : ControllerBase
     {
         var (notFound, badRequest, unauthorized) = await _service.Update(id, projecttype);
 
-        if (notFound) return NotFound(ProblemFactoryService.NotFound(id));
-        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, projecttype.Id));
-        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
+        if (notFound) return NotFound(WhenNotFound(id));
+
+        if (badRequest) return BadRequest(WhenIdMismatch(id, projecttype.Id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
@@ -92,8 +95,8 @@ public class ProjectTypesController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var (notFound, unauthorized) = await _service.Delete(id);
-        if (notFound) return NotFound();
-        if (unauthorized) return Forbid();
+        if (notFound) return NotFound(WhenNotFound(id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
 
         return NoContent();
     }
