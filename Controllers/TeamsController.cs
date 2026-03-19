@@ -19,8 +19,8 @@ public class TeamsController : ControllerBase
     /// <param name="pageSize"></param>
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<Team>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<object>>> Get(
+    [ProducesResponseType(typeof(IEnumerable<ReadTeamDTO>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ReadTeamDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
         => Ok(await _service.GetAll(page, pageSize));
@@ -32,7 +32,7 @@ public class TeamsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Team), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<object>> Get(int id)
+    public async Task<ActionResult<ReadTeamDTO>> Get(int id)
     {
         var team = await _service.GetOne(id);
         if (team == null) return NotFound(WhenNotFound(id));
