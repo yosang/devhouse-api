@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using devhouse.Models;
 using devhouse.Services;
 using Microsoft.AspNetCore.Authorization;
+using devhouse.DTOs;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -18,10 +19,10 @@ public class TeamsController : ControllerBase
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Team>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Team>>> Get(
+    public async Task<ActionResult<IEnumerable<object>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
-        => await _service.GetAll(page, pageSize);
+        => Ok(await _service.GetAll(page, pageSize));
 
     /// <summary> Retrieve a single team </summary>
     /// <param name="id"></param>
@@ -30,10 +31,10 @@ public class TeamsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Team), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Team>> Get(int id)
+    public async Task<ActionResult<object>> Get(int id)
     {
         var team = await _service.GetOne(id);
-        if (team == null) return NotFound();
+        if (team == null) return NotFound(ProblemFactoryService.NotFound(id));
         return team;
     }
 
@@ -45,10 +46,10 @@ public class TeamsController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(Team), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Team), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<Team>> Create(Team team)
+    public async Task<ActionResult<Team>> Create(CreateTeamDTO team)
     {
         var (newTeam, unauthorized) = await _service.Create(team);
-        if (unauthorized) return Forbid();
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return CreatedAtAction(nameof(Get), new { id = newTeam.Id }, newTeam);
     }
@@ -66,18 +67,12 @@ public class TeamsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, Team team)
+    public async Task<ActionResult> Update(int id, UpdateTeamDTO team)
     {
-        var (notFound, badRequest, unauthorized) = await _service.Update(id, team);
-        if (notFound) return NotFound();
-        if (badRequest) return BadRequest(new ProblemDetails()
-        {
-            Title = "Id mismatch",
-            Detail = $"There is a mismatch in the route path ({id}) Id and Request body Id ({team.Id})",
-            Status = StatusCodes.Status400BadRequest,
-            Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
-        });
-        if (unauthorized) return Forbid();
+        var (notfound, badRequest, unauthorized) = await _service.Update(id, team);
+        if (notfound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (badRequest) return BadRequest(ProblemFactoryService.BadRequestIdMismatch(id, team.Id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }
@@ -95,8 +90,8 @@ public class TeamsController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var (notfound, unauthorized) = await _service.Delete(id);
-        if (notfound) return NotFound();
-        if (unauthorized) return Forbid();
+        if (notfound) return NotFound(ProblemFactoryService.NotFound(id));
+        if (unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemFactoryService.Forbidden());
 
         return NoContent();
     }

@@ -1,4 +1,5 @@
 using devhouse.Context;
+using devhouse.DTOs;
 using devhouse.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -11,23 +12,48 @@ public class TeamService
     public AuthService _service { get; set; }
     public TeamService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<List<Team>> GetAll(int page = 1, int pageSize = 5)
+    // ! Here we need DTO's as well
+    public async Task<IEnumerable<object>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
         return await _ctx.Teams.AsNoTracking()
-                                .OrderBy(r => r.Id)
+                                .OrderBy(t => t.Id)
+                                .Include(p => p.Projects)
+                                .Include(d => d.Developers)
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize)
+                                .Select(t => new
+                                {
+                                    t.Id,
+                                    t.Name,
+                                    Projects = t.Projects!.Select(p => new { p.Id, p.Name, projecttype = p.ProjectType!.Name }),
+                                    Developers = t.Developers!.Select(d => new { d.Id, d.Firstname, d.Lastname, role = d.Role!.Name })
+                                })
                                 .ToListAsync();
     }
 
-    public async Task<Team> GetOne(int id) => await _ctx.Teams.AsNoTracking()
+    // ! Replace with DTO's
+    public async Task<object> GetOne(int id) => await _ctx.Teams.AsNoTracking()
                                                             .Where(t => t.Id == id)
+                                                            .Include(p => p.Projects)
+                                                            .Include(d => d.Developers)
+                                                            .Select(t => new
+                                                            {
+                                                                t.Id,
+                                                                t.Name,
+                                                                Projects = t.Projects!.Select(p => new { p.Id, p.Name, projecttype = p.ProjectType!.Name }),
+                                                                Developers = t.Developers!.Select(d => new { d.Id, d.Firstname, d.Lastname, role = d.Role!.Name })
+                                                            })
                                                             .FirstOrDefaultAsync() ?? null!;
 
-    public async Task<(Team, bool unauthorized)> Create(Team team)
+    public async Task<(Team, bool unauthorized)> Create(CreateTeamDTO dto)
     {
+        var team = new Team
+        {
+            Name = dto.Name
+        };
+
         if (!_service.isAdmin()) return (null!, true);
 
         _ctx.Teams.Add(team);
@@ -36,7 +62,7 @@ public class TeamService
         return (team, false);
     }
 
-    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, Team team)
+    public async Task<(bool notFound, bool badRequest, bool unauthorized)> Update(int id, UpdateTeamDTO team)
     {
         if (id != team.Id) return (false, true, false);
 
