@@ -46,7 +46,7 @@ public class ProblemResult
         => new ProblemDetails
         {
             Title = "Invalid credentials",
-            Detail = "You are lacking valid authetication credentials",
+            Detail = "You are lacking valid authentication credentials",
             Status = StatusCodes.Status401Unauthorized,
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-401-unauthorized"
         };

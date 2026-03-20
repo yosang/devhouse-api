@@ -14,6 +14,9 @@ public class TokenService
 
     public TokenService(JwtSettings jwt, IHttpContextAccessor http) => (_jwtSettings, _http) = (jwt, http);
 
+    /// <summary>Generates a new JWT token</summary>
+    /// <param name="developer"></param>
+    /// <returns>Serialized string token</returns>
     public string Generate(Developer developer)
         => new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
         issuer: _jwtSettings.Issuer,

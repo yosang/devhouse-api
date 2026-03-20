@@ -11,10 +11,16 @@ public class AuthService
     public DatabaseContext _ctx { get; set; }
     public TokenService _ts { get; set; }
 
+    // DI constructor
     public AuthService(DatabaseContext context, TokenService tokenService) => (_ctx, _ts) = (context, tokenService);
 
+    /// <summary>Retrieves clams from a token</summary>
     TokenClaimsDTO GetClaims => new TokenClaimsDTO { roleName = _ts.GetRoleName(), developerId = _ts.GetId(), roleId = _ts.GetRoleId(), teamId = _ts.GetTeamId() };
 
+    /// <summary>Attempts to authenticate a user by email and password, returns a token on successful authentication</summary>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
+    /// <returns>devhouse.Services.ServiceResult</returns>
     public async Task<ServiceResult<TokenDTO>> Authenticate(string email, string password)
     {
         var entity = await _ctx.Developers.AsNoTracking()
@@ -35,7 +41,7 @@ public class AuthService
     // Takes a developer entity and checks it up against the token claims
     // If it is an admin, return early with true, as Admins can modify everything
     // If its a teamlead check that both teamId and entity teamId match, TeamLeads can only modify developers from within their teams
-    // If tits a developer check the developer id, developers can only modify themselves
+    // If its a developer check the developer id, developers can only modify themselves
     public bool CanCreateDeleteDevelopers(Developer developer)
     {
         var claims = GetClaims;
