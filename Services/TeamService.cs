@@ -12,7 +12,7 @@ public class TeamService
     public AuthService _service { get; set; }
     public TeamService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<IEnumerable<ReadTeamDTO>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<IEnumerable<TeamDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
@@ -22,7 +22,7 @@ public class TeamService
                                 .Include(d => d.Developers)
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize)
-                                .Select(t => new ReadTeamDTO
+                                .Select(t => new TeamDetailsDTO
                                 {
                                     Id = t.Id,
                                     Name = t.Name,
@@ -43,11 +43,11 @@ public class TeamService
                                 .ToListAsync();
     }
 
-    public async Task<ReadTeamDTO> GetOne(int id) => await _ctx.Teams.AsNoTracking()
+    public async Task<TeamDetailsDTO> GetOne(int id) => await _ctx.Teams.AsNoTracking()
                                                             .Where(t => t.Id == id)
                                                             .Include(p => p.Projects)
                                                             .Include(d => d.Developers)
-                                                            .Select(t => new ReadTeamDTO
+                                                            .Select(t => new TeamDetailsDTO
                                                             {
                                                                 Id = t.Id,
                                                                 Name = t.Name,
