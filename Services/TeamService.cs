@@ -27,7 +27,13 @@ public class TeamService
                                     Id = t.Id,
                                     Name = t.Name,
                                     Projects = t.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name }),
-                                    Developers = t.Developers!.Select(d => new DeveloperDTO { Id = d.Id, Firstname = d.Firstname, Lastname = d.Lastname, Role = d.Role!.Name })
+                                    Developers = t.Developers!.Select(d => new DeveloperDTO
+                                    {
+                                        Id = d.Id,
+                                        Firstname = d.Firstname,
+                                        Lastname = d.Lastname,
+                                        Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name }
+                                    })
                                 })
                                 .ToListAsync();
     }
@@ -41,7 +47,13 @@ public class TeamService
                                                                 Id = t.Id,
                                                                 Name = t.Name,
                                                                 Projects = t.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name }),
-                                                                Developers = t.Developers!.Select(d => new DeveloperDTO { Id = d.Id, Firstname = d.Firstname, Lastname = d.Lastname, Role = d.Role!.Name })
+                                                                Developers = t.Developers!.Select(d => new DeveloperDTO
+                                                                {
+                                                                    Id = d.Id,
+                                                                    Firstname = d.Firstname,
+                                                                    Lastname = d.Lastname,
+                                                                    Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name }
+                                                                })
                                                             })
                                                             .FirstOrDefaultAsync() ?? null!;
 
