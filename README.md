@@ -67,7 +67,7 @@ To bypass the HTTPS profile altogether, run the http profile using `dotnet run -
 5. Before using the migrations, make sure you have the `Entity Frame Work Core` tool installed, if nof, install with `dotnet tool install --global dotnet-ef` .
 6. Synchronize and update the database with `dotnet ef database update`.
 7. Run the application with `dotnet run`.
-8. To test the available endpoints visit `https://localhost:7264/swagger`.
+8. To test the available endpoints visit `/swagger`.
 
 # Instructions to create needed Migrations
 There is no need to create Migrations manually, its already provided, run `dotnet ef database update` to sync the database.
@@ -76,7 +76,7 @@ There is no need to create Migrations manually, its already provided, run `dotne
 I chose to implement a more realistic authentication and authorization design, beyond the minimal assignment requirement of JWT protection on CRUD endpoints.
 
 ## Authentication
-Handled by a single `Login` on `Auth` endpoint, which validates user credentials. On successful login, a JWT is generated containing claims such as `roleId`, `roleName`, `developerId` and `teamId`. These claims are extracted using relevant methods using the `IHttpContextAccessor` type, which is injected on [TokenService.cs](./Services/Auth/TokenService.cs). This allows us to authenticate the a client through their token, instead of having to make additional database queriy checks.
+Handled by a single `Login` on `Auth` endpoint, which validates user credentials. On successful login, a JWT is generated containing claims such as `roleId`, `roleName`, `developerId` and `teamId`. These claims are extracted using relevant methods using the `IHttpContextAccessor` type, which is injected on [TokenService.cs](./Services/Auth/TokenService.cs). This allows us to immplement authorization checks through the token, instead of having to make additional database queriy checks.
 
 ## Authorization
 For authorization, I chose to implement a Role Based Access Control (RBAC) system. The roles are `Developer`, `TeamLead` and `Admin`.

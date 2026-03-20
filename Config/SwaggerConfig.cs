@@ -4,6 +4,7 @@ namespace devhouse.Extensions;
 
 public static class SwaggerConfig
 {
+    /// <summary>Adds Swagger Gen configuration, including OpenApi documentation, inline XML comments for endpoint descriptions and Bearer authentication</summary>
     public static IServiceCollection AddSwaggerConfig(this IServiceCollection service)
     {
         service.AddSwaggerGen(options =>
@@ -50,6 +51,9 @@ public static class SwaggerConfig
         return service;
     }
 
+    /// <summary>Enables Swagger middlewares for development environment only</summary>
+    /// <param name="app"></param>
+    /// <returns></returns>
     public static WebApplication UseSwaggerConfig(this WebApplication app)
     {
         // Swagger is currently only available to development during API testing.

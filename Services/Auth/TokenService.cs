@@ -10,7 +10,7 @@ namespace devhouse.Services;
 public class TokenService
 {
     public JwtSettings _jwtSettings { get; set; }
-    public IHttpContextAccessor _http { get; set; } // This is added to the DI container from Program.cs
+    public IHttpContextAccessor _http { get; set; }
 
     public TokenService(JwtSettings jwt, IHttpContextAccessor http) => (_jwtSettings, _http) = (jwt, http);
 

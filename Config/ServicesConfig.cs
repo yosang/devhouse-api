@@ -4,6 +4,7 @@ namespace devhouse.Extensions;
 
 public static class ServicesConfig
 {
+    /// <summary>Adds various services to the DI container requested by controllers</summary>
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services
@@ -12,8 +13,7 @@ public static class ServicesConfig
                 .AddScoped<ProjectService>()
                 .AddScoped<RoleService>()
                 .AddScoped<TeamService>()
-                .AddScoped<AuthService>()
-                .AddSingleton<TokenService>();
+                .AddScoped<AuthService>();
 
         return services;
     }

@@ -2,6 +2,9 @@ namespace devhouse.Extensions;
 
 public static class CorsConfig
 {
+    /// <summary>Configures CORS policies for development and production environments</summary>
+    /// <param name="service"></param>
+    /// <returns>Microsoft.Extensions.DependencyInjection.IServiceCollection</returns>
     public static IServiceCollection AddCorsConfig(this IServiceCollection service)
     {
         service.AddCors(options =>
@@ -27,6 +30,9 @@ public static class CorsConfig
         return service;
     }
 
+    /// <summary>Enables CORS for the current environment</summary>
+    /// <param name="app"></param>
+    /// <returns>Microsoft.AspNetCore.Builder.WebApplication</returns>
     public static WebApplication UseCorsConfig(this WebApplication app)
     {
         string env = app.Environment.IsDevelopment() ? "Development" : "Production";
