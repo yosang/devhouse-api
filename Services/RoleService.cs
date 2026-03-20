@@ -43,7 +43,7 @@ public class RoleService
         return ServiceResult<Role>.WithData(role);
     }
 
-    public async Task<ServiceResult> Update(int id, Role role)
+    public async Task<ServiceResult> Update(int id, UpdateRoleDTO role)
     {
         if (id != role.Id) return ServiceResult.Badrequest();
 

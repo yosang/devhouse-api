@@ -65,7 +65,7 @@ public class DeveloperService
             Firstname = developer.Firstname,
             Lastname = developer.Lastname,
             Email = developer.Email,
-            Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : _service.HashedPassword(developer.Password),
+            Password = string.IsNullOrWhiteSpace(developer.Password) ? developer.Password : _service.HashedPassword(developer.Password),
             TeamId = developer.TeamId,
             RoleId = developer.RoleId
         };
@@ -91,7 +91,7 @@ public class DeveloperService
         entity.Firstname = developer.Firstname;
         entity.Lastname = developer.Lastname;
         entity.Email = developer.Email;
-        entity.Password = string.IsNullOrWhiteSpace(developer.Password) ? "" : _service.HashedPassword(developer.Password);
+        entity.Password = string.IsNullOrWhiteSpace(developer.Password) ? developer.Password : _service.HashedPassword(developer.Password);
 
         if (_service.isAdmin())
         {

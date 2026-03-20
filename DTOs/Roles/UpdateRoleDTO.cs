@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace devhouse.DTOs;
 
-public class UpdateProjectTypeDTO
+public class UpdateRoleDTO
 {
     [Required]
     public int Id { get; set; }

@@ -68,7 +68,7 @@ public class RolesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, Role role)
+    public async Task<ActionResult> Update(int id, UpdateRoleDTO role)
     {
         var result = await _service.Update(id, role);
         if (result.notFound) return NotFound(WhenNotFound(id));

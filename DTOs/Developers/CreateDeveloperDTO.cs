@@ -18,10 +18,8 @@ public class CreateDeveloperDTO
     public string? Password { get; set; }
 
     [Required]
-    [Range(1, 3)]
     public int TeamId { get; set; }
 
-    [Range(1, 3)]
     [Required]
     public int RoleId { get; set; }
 }
