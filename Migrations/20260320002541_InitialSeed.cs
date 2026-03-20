@@ -8,7 +8,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace devhouse.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialSeed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -140,7 +140,8 @@ namespace devhouse.Migrations
                 {
                     { 1, "Platform" },
                     { 2, "Mobile" },
-                    { 3, "API" }
+                    { 3, "API" },
+                    { 4, "Admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -148,10 +149,10 @@ namespace devhouse.Migrations
                 columns: new[] { "Id", "Email", "Firstname", "Lastname", "Password", "RoleId", "TeamId" },
                 values: new object[,]
                 {
-                    { 1, null, "Alice", "Johnson", null, 1, 1 },
-                    { 2, null, "Michael", "Cross", null, 2, 1 },
-                    { 3, "elise@dev.com", "Elise", "Bergum", "AQAAAAIAAYagAAAAEIycYypww+L0YTgfBXysI/q12ZTOl6m2RO7SL3Q3OuEe2cOyBMw257v8+7MGOrMTQg==", 3, 1 },
-                    { 4, null, "Bob", "Smith", null, 1, 2 },
+                    { 1, "admin@dev.com", "Elise", "Bergum", "AQAAAAIAAYagAAAAEEDYESOht5dfdJaT4DA0hl+ccLwMLmReJyDYXbsjlpxIgbP5vKaj4vMQKJ5FSCdgFA==", 3, 4 },
+                    { 2, "lead@dev.com", "Alice", "Johnson", "AQAAAAIAAYagAAAAEM3GXlD1ZnEoDadMxwlF6Fs1nzBdaavsFiaL19g1r+9RPsxC60wXi8PLjDeQJERHBA==", 2, 1 },
+                    { 3, "dev@dev.com", "Michael", "Cross", "AQAAAAIAAYagAAAAEKQykh0NUWRgdhMS/fXsUvaEDEwC1/vZPuL+ne2guGTy68dtrpa/321yciwXMYmLDQ==", 1, 1 },
+                    { 4, null, "Bob", "Smith", null, 1, 1 },
                     { 5, null, "Marta", "Parks", null, 2, 2 },
                     { 6, null, "Diana", "Clark", null, 1, 3 }
                 });

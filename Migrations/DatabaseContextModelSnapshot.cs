@@ -59,27 +59,31 @@ namespace devhouse.Migrations
                         new
                         {
                             Id = 1,
-                            Firstname = "Alice",
-                            Lastname = "Johnson",
-                            RoleId = 1,
-                            TeamId = 1
+                            Email = "admin@dev.com",
+                            Firstname = "Elise",
+                            Lastname = "Bergum",
+                            Password = "AQAAAAIAAYagAAAAEEDYESOht5dfdJaT4DA0hl+ccLwMLmReJyDYXbsjlpxIgbP5vKaj4vMQKJ5FSCdgFA==",
+                            RoleId = 3,
+                            TeamId = 4
                         },
                         new
                         {
                             Id = 2,
-                            Firstname = "Michael",
-                            Lastname = "Cross",
+                            Email = "lead@dev.com",
+                            Firstname = "Alice",
+                            Lastname = "Johnson",
+                            Password = "AQAAAAIAAYagAAAAEM3GXlD1ZnEoDadMxwlF6Fs1nzBdaavsFiaL19g1r+9RPsxC60wXi8PLjDeQJERHBA==",
                             RoleId = 2,
                             TeamId = 1
                         },
                         new
                         {
                             Id = 3,
-                            Email = "elise@dev.com",
-                            Firstname = "Elise",
-                            Lastname = "Bergum",
-                            Password = "AQAAAAIAAYagAAAAEIycYypww+L0YTgfBXysI/q12ZTOl6m2RO7SL3Q3OuEe2cOyBMw257v8+7MGOrMTQg==",
-                            RoleId = 3,
+                            Email = "dev@dev.com",
+                            Firstname = "Michael",
+                            Lastname = "Cross",
+                            Password = "AQAAAAIAAYagAAAAEKQykh0NUWRgdhMS/fXsUvaEDEwC1/vZPuL+ne2guGTy68dtrpa/321yciwXMYmLDQ==",
+                            RoleId = 1,
                             TeamId = 1
                         },
                         new
@@ -88,7 +92,7 @@ namespace devhouse.Migrations
                             Firstname = "Bob",
                             Lastname = "Smith",
                             RoleId = 1,
-                            TeamId = 2
+                            TeamId = 1
                         },
                         new
                         {
@@ -249,6 +253,11 @@ namespace devhouse.Migrations
                         {
                             Id = 3,
                             Name = "API"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Admin"
                         });
                 });
 

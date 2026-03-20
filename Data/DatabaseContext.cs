@@ -78,10 +78,10 @@ public class DatabaseContext : DbContext
 
                 // Developers
                 mb.Entity<Developer>().HasData(
-                    new Developer { Id = 1, Firstname = "Elise", Lastname = "Bergum", Email = "admin@dev.com", Password = "AQAAAAIAAYagAAAAEIycYypww+L0YTgfBXysI/q12ZTOl6m2RO7SL3Q3OuEe2cOyBMw257v8+7MGOrMTQg==", TeamId = 4, RoleId = 3 },
-                    new Developer { Id = 2, Firstname = "Alice", Lastname = "Johnson", TeamId = 1, RoleId = 1 },
-                    new Developer { Id = 3, Firstname = "Michael", Lastname = "Cross", TeamId = 1, RoleId = 2 },
-                    new Developer { Id = 4, Firstname = "Bob", Lastname = "Smith", TeamId = 2, RoleId = 1 },
+                    new Developer { Id = 1, Firstname = "Elise", Lastname = "Bergum", Email = "admin@dev.com", Password = "AQAAAAIAAYagAAAAEEDYESOht5dfdJaT4DA0hl+ccLwMLmReJyDYXbsjlpxIgbP5vKaj4vMQKJ5FSCdgFA==", TeamId = 4, RoleId = 3 },
+                    new Developer { Id = 2, Firstname = "Alice", Lastname = "Johnson", Email = "lead@dev.com", Password = "AQAAAAIAAYagAAAAEM3GXlD1ZnEoDadMxwlF6Fs1nzBdaavsFiaL19g1r+9RPsxC60wXi8PLjDeQJERHBA==", TeamId = 1, RoleId = 2 },
+                    new Developer { Id = 3, Firstname = "Michael", Lastname = "Cross", Email = "dev@dev.com", Password = "AQAAAAIAAYagAAAAEKQykh0NUWRgdhMS/fXsUvaEDEwC1/vZPuL+ne2guGTy68dtrpa/321yciwXMYmLDQ==", TeamId = 1, RoleId = 1 },
+                    new Developer { Id = 4, Firstname = "Bob", Lastname = "Smith", TeamId = 1, RoleId = 1 },
                     new Developer { Id = 5, Firstname = "Marta", Lastname = "Parks", TeamId = 2, RoleId = 2 },
                     new Developer { Id = 6, Firstname = "Diana", Lastname = "Clark", TeamId = 3, RoleId = 1 }
                 );

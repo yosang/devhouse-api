@@ -72,6 +72,39 @@ To bypass the HTTPS profile altogether, run the http profile using `dotnet run -
 # Instructions to create needed Migrations
 There is no need to create Migrations manually, its already provided, run `dotnet ef database update` to sync the database.
 
+# Instructions to test authentication & authorization
+I chose to implement a more realistic authentication and authorization design, beyond the minimal assignment requirement of JWT protection on CRUD endpoints.
+
+## Authentication
+Handled by a single `Login` on `Auth` endpoint, which validates user credentials. On successful login, a JWT is generated containing claims such as `roleId`, `roleName`, `developerId` and `teamId`. These claims are extracted using relevant methods using the `IHttpContextAccessor` type, which is injected on [TokenService.cs](./Services/Auth/TokenService.cs). This allows us to authenticate the a client through their token, instead of having to make additional database queriy checks.
+
+## Authorization
+For authorization, I chose to implement a Role Based Access Control (RBAC) system. The roles are `Developer`, `TeamLead` and `Admin`.
+- `Admin` - Have full access to all resources.
+- `Teamlead` - Can only modify within their team, limited to developers only. They cannot modify other `TeamLeads` or `Admins`.
+- `Developer` - Can only modify their own data.
+
+All logic is centralized in the [AuthService](./Services/Auth/AuthService.cs) layer through specific methods.
+
+While we could have implemented controller attributes, this approach provides more granular detailed RBAC.
+
+Currently all `GET` endpoints are publicly accessible, while `POST`, `PUT` and `DELETE` endpoints are restricted. This protects integrity, while leaving some data open. I also implemented DTO's for the `GET` endpoints to hide sensitive information, such as `passwords` and `emails`.   
+
+## Testing
+To make the system easier to test, I provided seed data with developers of different roles across multiple teams.
+
+### Admin
+- email: admin@dev.com
+- password: admin1234
+
+### TeamLead
+- email: lead@dev.com
+- password: lead1234
+
+### Developer
+- email: dev@dev.com
+- password: developer1234
+
 # Connection String structure for MySQL Database connection
 The following entry must be present in `appsettings.json`, replace the placeholders with your actual database details:
 
