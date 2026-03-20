@@ -40,21 +40,14 @@ The following entry must be present in `appsettings.json`, replace the placehold
     }
 ```
 
-## HTTPS configuration
-This API is configured to use the https by default, since we are working with JWT over the network.
-With `UseHttpsRedirection()`, any http connection attempt will be redirected to https, this means that 
-our communication protocol `(request, response)` is always encrypted, and JWT tokens are protected.
+## Connection String structure for MySQL Database connection
+The following entry must be present in `appsettings.json`, replace the placeholders with your actual database details:
 
-When in development, we need a ASP.NET self-signed certificate, here are some command we can manage certificates with:
-
-- `dotnet dev-certs https --check` - Lists current valid certificate, here we can see the validation and expiration date.
-- `dotnet dev-certs https --trust` - Requests a ASP.NET certificate if missing and marks it as trusted locally.
-- `dotnet dev-certs https --clean` - Removes any existing certificates.
-
-The certificate is fine for development, but wont work for production, in which case we need a real certificate provider, 
-the command above creates a fake certificate that tells our local clients (browsers) to trust the certificate provided.
-
-To bypass the HTTPS profile altogether, run the http profile using `dotnet run --launch-profile http`
+```json
+ "ConnectionStrings": {
+        "Default": "server=localhost;database=devhouse;user=<username>;password=<password>"
+    },
+```
 
 # Instructions to run the application
 
@@ -105,14 +98,21 @@ To make the system easier to test, I provided seed data with developers of diffe
 - email: dev@dev.com
 - password: developer1234
 
-# Connection String structure for MySQL Database connection
-The following entry must be present in `appsettings.json`, replace the placeholders with your actual database details:
+# HTTPS configuration
+This API is configured to use the https by default, since we are working with JWT over the network.
+With `UseHttpsRedirection()`, any http connection attempt will be redirected to https, this means that 
+our communication protocol `(request, response)` is always encrypted, and JWT tokens are protected.
 
-```json
- "ConnectionStrings": {
-        "Default": "server=localhost;database=devhouse;user=<username>;password=<password>"
-    },
-```
+When in development, we need a ASP.NET self-signed certificate, here are some commands we can manage certificates with:
+
+- `dotnet dev-certs https --check` - Lists current valid certificate, here we can see the validation and expiration date.
+- `dotnet dev-certs https --trust` - Requests a ASP.NET certificate if missing and marks it as trusted locally.
+- `dotnet dev-certs https --clean` - Removes any existing certificates.
+
+The certificate is fine for development, but wont work for production, in which case we need a real certificate provider, 
+the command above creates a fake certificate that tells our local clients (browsers) to trust the certificate provided.
+
+To bypass the HTTPS profile altogether, run the http profile using `dotnet run --launch-profile http`
 
 # Additional external libraries/packages used
 This API is built with `.NET 9.0`.
