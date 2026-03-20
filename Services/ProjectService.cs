@@ -13,7 +13,7 @@ public class ProjectService
 
     public ProjectService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<IEnumerable<ReadProjectDTO>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<IEnumerable<ProjectDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
@@ -23,25 +23,25 @@ public class ProjectService
                                     .Include(pt => pt.Team)
                                     .Skip((page - 1) * pageSize)
                                     .Take(pageSize)
-                                    .Select(p => new ReadProjectDTO
+                                    .Select(p => new ProjectDetailsDTO
                                     {
                                         Id = p.Id,
                                         Name = p.Name,
-                                        ProjectType = p.ProjectType!.Name,
+                                        ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name },
                                         Team = new TeamDTO { Id = p.TeamId, Name = p.Team!.Name }
                                     })
                                     .ToListAsync();
     }
 
-    public async Task<ReadProjectDTO> GetOne(int id) => await _ctx.Projects.AsNoTracking()
+    public async Task<ProjectDetailsDTO> GetOne(int id) => await _ctx.Projects.AsNoTracking()
                                                                     .Where(p => p.Id == id)
                                                                     .Include(pt => pt.ProjectType)
                                                                     .Include(pt => pt.Team)
-                                                                    .Select(p => new ReadProjectDTO
+                                                                    .Select(p => new ProjectDetailsDTO
                                                                     {
                                                                         Id = p.Id,
                                                                         Name = p.Name,
-                                                                        ProjectType = p.ProjectType!.Name,
+                                                                        ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name },
                                                                         Team = new TeamDTO { Id = p.TeamId, Name = p.Team!.Name }
                                                                     })
                                                                     .FirstOrDefaultAsync() ?? null!;

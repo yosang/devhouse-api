@@ -26,7 +26,12 @@ public class TeamService
                                 {
                                     Id = t.Id,
                                     Name = t.Name,
-                                    Projects = t.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name }),
+                                    Projects = t.Projects!.Select(p => new ProjectDTO
+                                    {
+                                        Id = p.Id,
+                                        Name = p.Name,
+                                        ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
+                                    }),
                                     Developers = t.Developers!.Select(d => new DeveloperDTO
                                     {
                                         Id = d.Id,
@@ -46,7 +51,12 @@ public class TeamService
                                                             {
                                                                 Id = t.Id,
                                                                 Name = t.Name,
-                                                                Projects = t.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name }),
+                                                                Projects = t.Projects!.Select(p => new ProjectDTO
+                                                                {
+                                                                    Id = p.Id,
+                                                                    Name = p.Name,
+                                                                    ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
+                                                                }),
                                                                 Developers = t.Developers!.Select(d => new DeveloperDTO
                                                                 {
                                                                     Id = d.Id,

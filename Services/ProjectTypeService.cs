@@ -12,7 +12,7 @@ public class ProjectTypeService
     public ProjectTypeService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     // ! Replace object with DTO
-    public async Task<IEnumerable<ReadProjectTypesDTO>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<IEnumerable<ProjectTypesDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
@@ -21,11 +21,11 @@ public class ProjectTypeService
                                         .Include(pt => pt.Projects)
                                         .Skip((page - 1) * pageSize)
                                         .Take(pageSize)
-                                        .Select(pt => new ReadProjectTypesDTO
+                                        .Select(pt => new ProjectTypesDetailsDTO
                                         {
                                             Id = pt.Id,
                                             Name = pt.Name,
-                                            Projects = pt.Projects!.Select(p => new ReadProjectDTO
+                                            Projects = pt.Projects!.Select(p => new ProjectForProjectTypesDTO
                                             {
                                                 Id = p.Id,
                                                 Name = p.Name,
@@ -33,7 +33,15 @@ public class ProjectTypeService
                                                 {
                                                     Id = p.Team!.Id,
                                                     Name = p.Team.Name,
-                                                    Developers = p.Team.Developers!.Select(d => new DeveloperDTO { Id = d.Id, Firstname = d.Firstname, Lastname = d.Lastname, })
+                                                    Developers = p.Team.Developers!.Select(d => new DeveloperDTO
+                                                    {
+                                                        Id =
+                                                        d.Id,
+                                                        Firstname =
+                                                        d.Firstname,
+                                                        Lastname = d.Lastname,
+                                                        Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name }
+                                                    })
                                                 }
                                             }).ToArray()
                                         })
@@ -41,15 +49,15 @@ public class ProjectTypeService
     }
 
     // ! Replace object with DTO
-    public async Task<ReadProjectTypesDTO> GetOne(int id)
+    public async Task<ProjectTypesDetailsDTO> GetOne(int id)
         => await _ctx.ProjectTypes.AsNoTracking()
                                     .Where(pt => pt.Id == id)
                                     .Include(pt => pt.Projects)
-                                     .Select(pt => new ReadProjectTypesDTO
+                                     .Select(pt => new ProjectTypesDetailsDTO
                                      {
                                          Id = pt.Id,
                                          Name = pt.Name,
-                                         Projects = pt.Projects!.Select(p => new ReadProjectDTO
+                                         Projects = pt.Projects!.Select(p => new ProjectForProjectTypesDTO
                                          {
                                              Id = p.Id,
                                              Name = p.Name,
@@ -57,7 +65,13 @@ public class ProjectTypeService
                                              {
                                                  Id = p.Team!.Id,
                                                  Name = p.Team.Name,
-                                                 Developers = p.Team.Developers!.Select(d => new DeveloperDTO { Id = d.Id, Firstname = d.Firstname, Lastname = d.Lastname, })
+                                                 Developers = p.Team.Developers!.Select(d => new DeveloperDTO
+                                                 {
+                                                     Id = d.Id,
+                                                     Firstname = d.Firstname,
+                                                     Lastname = d.Lastname,
+                                                     Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name }
+                                                 })
                                              }
                                          }).ToArray()
                                      })

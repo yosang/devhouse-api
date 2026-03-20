@@ -19,8 +19,8 @@ public class DevelopersController : ControllerBase
     /// <param name="pageSize"></param>
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<DeveloperWithDetailsDTO>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<DeveloperWithDetailsDTO>>> Get(
+    [ProducesResponseType(typeof(IEnumerable<DeveloperDetailsDTO>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<DeveloperDetailsDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
         => Ok(await _service.GetAll(page, pageSize)); // When we are not returning an ASP.NET Core entity like Developer, but a DTO, we must explicitly wrap it
@@ -30,9 +30,9 @@ public class DevelopersController : ControllerBase
     /// <response code="200">Single resource retrieved</response>
     /// <response code="404">Resource not found</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(DeveloperWithDetailsDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DeveloperDetailsDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DeveloperWithDetailsDTO>> Get(int id)
+    public async Task<ActionResult<DeveloperDetailsDTO>> Get(int id)
     {
         var dev = await _service.GetOne(id);
         if (dev == null) return NotFound(WhenNotFound(id));

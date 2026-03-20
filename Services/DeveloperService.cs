@@ -12,7 +12,7 @@ public class DeveloperService
 
     public DeveloperService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<IEnumerable<DeveloperWithDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<IEnumerable<DeveloperDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
@@ -21,30 +21,40 @@ public class DeveloperService
                                     .Include(e => e.Team)
                                     .Skip((page - 1) * pageSize)
                                     .Take(pageSize)
-                                    .Select(d => new DeveloperWithDetailsDTO
+                                    .Select(d => new DeveloperDetailsDTO
                                     {
                                         Id = d.Id,
                                         Firstname = d.Firstname,
                                         Lastname = d.Lastname,
                                         Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name },
                                         Team = new TeamDTO { Id = d.TeamId, Name = d.Team!.Name },
-                                        Projects = d.Team.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name })
+                                        Projects = d.Team.Projects!.Select(p => new ProjectDTO
+                                        {
+                                            Id = p.Id,
+                                            Name = p.Name,
+                                            ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
+                                        })
                                     })
                                     .ToListAsync();
     }
 
-    public async Task<DeveloperWithDetailsDTO> GetOne(int id)
+    public async Task<DeveloperDetailsDTO> GetOne(int id)
         => await _ctx.Developers.AsNoTracking()
                                 .Where(d => d.Id == id)
                                 .Include(d => d.Team)
-                                .Select(d => new DeveloperWithDetailsDTO
+                                .Select(d => new DeveloperDetailsDTO
                                 {
                                     Id = d.Id,
                                     Firstname = d.Firstname,
                                     Lastname = d.Lastname,
                                     Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name },
                                     Team = new TeamDTO { Id = d.TeamId, Name = d.Team!.Name },
-                                    Projects = d.Team.Projects!.Select(p => new ProjectDTO { Id = p.Id, Name = p.Name, ProjectType = p.ProjectType!.Name })
+                                    Projects = d.Team.Projects!.Select(p => new ProjectDTO
+                                    {
+                                        Id = p.Id,
+                                        Name = p.Name,
+                                        ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
+                                    })
                                 })
                                 .FirstOrDefaultAsync() ?? null!;
 

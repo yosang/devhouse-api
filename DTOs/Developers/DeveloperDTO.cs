@@ -8,7 +8,7 @@ public class DeveloperDTO
     public RoleDTO? Role { get; set; }
 }
 
-public class DeveloperWithDetailsDTO
+public class DeveloperDetailsDTO
 {
     public int Id { get; set; }
     public string? Firstname { get; set; }

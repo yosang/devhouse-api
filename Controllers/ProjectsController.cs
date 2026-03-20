@@ -20,8 +20,8 @@ public class ProjectsController : ControllerBase
     /// <param name="pageSize"></param>
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<ReadProjectDTO>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<ReadProjectDTO>>> Get(
+    [ProducesResponseType(typeof(IEnumerable<ProjectDetailsDTO>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ProjectDetailsDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
         => Ok(await _service.GetAll(page, pageSize));
@@ -31,9 +31,9 @@ public class ProjectsController : ControllerBase
     /// <response code="200">Single resource retrieved</response>
     /// <response code="404">Resource not found</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(ReadProjectDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProjectDetailsDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ReadProjectDTO>> Get(int id)
+    public async Task<ActionResult<ProjectDetailsDTO>> Get(int id)
     {
         var proj = await _service.GetOne(id);
         if (proj == null) return NotFound(WhenNotFound(id));
