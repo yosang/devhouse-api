@@ -3,7 +3,6 @@ using devhouse.Models;
 using Microsoft.AspNetCore.Authorization;
 using devhouse.DTOs;
 using devhouse.Services;
-using static devhouse.Services.ProblemFactoryService;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -35,7 +34,7 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<RoleDTO>> Get(int id)
     {
         var role = await _service.GetOne(id);
-        if (role == null) return NotFound(WhenNotFound(id));
+        if (role == null) return NotFound(ProblemResult.NoMatch(id));
         return role;
     }
 
@@ -50,7 +49,7 @@ public class RolesController : ControllerBase
     public async Task<ActionResult<Role>> Create(CreateRoleDTO role)
     {
         var result = await _service.Create(role);
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result.Data);
     }
@@ -71,9 +70,9 @@ public class RolesController : ControllerBase
     public async Task<ActionResult> Update(int id, UpdateRoleDTO role)
     {
         var result = await _service.Update(id, role);
-        if (result.notFound) return NotFound(WhenNotFound(id));
-        if (result.badRequest) return BadRequest(WhenIdMismatch(id, role.Id));
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.notFound) return NotFound(ProblemResult.NoMatch(id));
+        if (result.badRequest) return BadRequest(ProblemResult.IdMismatch(id, role.Id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return NoContent();
     }
@@ -91,8 +90,8 @@ public class RolesController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var result = await _service.Delete(id);
-        if (result.notFound) return NotFound(WhenNotFound(id));
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.notFound) return NotFound(ProblemResult.NoMatch(id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return NoContent();
     }

@@ -15,7 +15,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<string>> Login(LoginDTO loginDTO)
     {
         var (authenticated, token) = await _service.Authenticate(loginDTO.Email, loginDTO.Password);
-        if (!authenticated) return Unauthorized();
+        if (!authenticated) return Unauthorized(ProblemResult.InvalidCredentials());
 
         return Ok(token);
     }

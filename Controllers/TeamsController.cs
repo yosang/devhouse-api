@@ -3,7 +3,6 @@ using devhouse.Models;
 using devhouse.Services;
 using Microsoft.AspNetCore.Authorization;
 using devhouse.DTOs;
-using static devhouse.Services.ProblemFactoryService;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -35,7 +34,7 @@ public class TeamsController : ControllerBase
     public async Task<ActionResult<TeamDetailsDTO>> Get(int id)
     {
         var team = await _service.GetOne(id);
-        if (team == null) return NotFound(WhenNotFound(id));
+        if (team == null) return NotFound(ProblemResult.NoMatch(id));
         return team;
     }
 
@@ -50,7 +49,7 @@ public class TeamsController : ControllerBase
     public async Task<ActionResult<Team>> Create(CreateTeamDTO team)
     {
         var result = await _service.Create(team);
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result);
     }
@@ -71,9 +70,9 @@ public class TeamsController : ControllerBase
     public async Task<ActionResult> Update(int id, UpdateTeamDTO team)
     {
         var result = await _service.Update(id, team);
-        if (result.notFound) return NotFound(WhenNotFound(id));
-        if (result.badRequest) return BadRequest(WhenIdMismatch(id, team.Id));
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.notFound) return NotFound(ProblemResult.NoMatch(id));
+        if (result.badRequest) return BadRequest(ProblemResult.IdMismatch(id, team.Id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return NoContent();
     }
@@ -91,8 +90,8 @@ public class TeamsController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var result = await _service.Delete(id);
-        if (result.notFound) return NotFound(WhenNotFound(id));
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.notFound) return NotFound(ProblemResult.NoMatch(id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return NoContent();
     }

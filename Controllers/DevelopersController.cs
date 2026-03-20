@@ -3,7 +3,6 @@ using devhouse.Services;
 using devhouse.Models;
 using Microsoft.AspNetCore.Authorization;
 using devhouse.DTOs;
-using static devhouse.Services.ProblemFactoryService;
 
 [ApiController]
 [Route("/api/[controller]")]
@@ -35,7 +34,7 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult<DeveloperDetailsDTO>> Get(int id)
     {
         var dev = await _service.GetOne(id);
-        if (dev == null) return NotFound(WhenNotFound(id));
+        if (dev == null) return NotFound(ProblemResult.NoMatch(id));
         return dev;
     }
 
@@ -51,7 +50,7 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult<Developer>> Create(CreateDeveloperDTO developer)
     {
         var result = await _service.Create(developer);
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return CreatedAtAction(nameof(Get), new { id = result.Data!.Id }, result.Data);
     }
@@ -72,9 +71,9 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult> Update(int id, UpdateDeveloperDTO developer)
     {
         var result = await _service.Update(id, developer);
-        if (result.notFound) return NotFound(WhenNotFound(developer.Id));
-        if (result.badRequest) return BadRequest(WhenIdMismatch(id, developer.Id));
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.notFound) return NotFound(ProblemResult.NoMatch(developer.Id));
+        if (result.badRequest) return BadRequest(ProblemResult.IdMismatch(id, developer.Id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return NoContent();
     }
@@ -92,8 +91,8 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult> Remove(int id)
     {
         var result = await _service.Delete(id);
-        if (result.notFound) return NotFound(WhenNotFound(id));
-        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, WhenForbidden());
+        if (result.notFound) return NotFound(ProblemResult.NoMatch(id));
+        if (result.unauthorized) return StatusCode(StatusCodes.Status403Forbidden, ProblemResult.NoPermissions());
 
         return NoContent();
     }
