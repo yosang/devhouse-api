@@ -15,20 +15,21 @@ public class AuthService
 
     TokenClaimsDTO GetClaims => new TokenClaimsDTO { roleName = _ts.GetRoleName(), developerId = _ts.GetId(), roleId = _ts.GetRoleId(), teamId = _ts.GetTeamId() };
 
-    public async Task<(bool authenticated, string token)> Authenticate(string email, string password)
+    public async Task<ServiceResult<TokenDTO>> Authenticate(string email, string password)
     {
-        var entity = await _ctx.Developers.Include(e => e.Role) // We have to include roles so we can add the name to the JWT token
+        var entity = await _ctx.Developers.AsNoTracking()
+                                            .Include(e => e.Role) // We have to include roles so we can add the name to the JWT token
                                             .Where(e => e.Email == email)
                                             .FirstOrDefaultAsync();
 
-        if (entity == null) return (authenticated: false, token: string.Empty);
+        if (entity == null) return ServiceResult<TokenDTO>.InvalidCredentials();
 
-        var isValidPassword = new PasswordHasher<Developer>().VerifyHashedPassword(entity, entity.Password!, password);
+        var isValidPassword = new PasswordHasher<object>().VerifyHashedPassword(new object(), entity.Password!, password);
 
         if (isValidPassword == PasswordVerificationResult.Success)
-            return (authenticated: true, token: _ts.Generate(entity));
+            return ServiceResult<TokenDTO>.WithData(new TokenDTO { Token = _ts.Generate(entity) });
 
-        return (authenticated: false, token: string.Empty);
+        return ServiceResult<TokenDTO>.InvalidCredentials();
     }
 
     // Takes a developer entity and checks it up against the token claims
