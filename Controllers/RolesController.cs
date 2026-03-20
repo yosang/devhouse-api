@@ -19,8 +19,8 @@ public class RolesController : ControllerBase
     /// <param name="pageSize"></param>
     /// <response code="200">All resources retrieved</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<Role>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Role>>> Get(
+    [ProducesResponseType(typeof(IEnumerable<RoleDTO>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<RoleDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
             => await _service.GetAll(page, pageSize);
@@ -30,9 +30,9 @@ public class RolesController : ControllerBase
     /// <response code="200">Single resource retrieved</response>
     /// <response code="404">Resource not found</response>
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Role), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RoleDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Role>> Get(int id)
+    public async Task<ActionResult<RoleDTO>> Get(int id)
     {
         var role = await _service.GetOne(id);
         if (role == null) return NotFound(WhenNotFound(id));

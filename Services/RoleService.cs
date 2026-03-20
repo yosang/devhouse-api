@@ -11,7 +11,7 @@ public class RoleService
 
     public RoleService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    public async Task<List<Role>> GetAll(int page = 1, int pageSize = 5)
+    public async Task<List<RoleDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
@@ -19,11 +19,13 @@ public class RoleService
                                 .OrderBy(r => r.Id)
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize)
+                                .Select(r => new RoleDTO { Id = r.Id, Name = r.Name })
                                 .ToListAsync();
     }
 
-    public async Task<Role> GetOne(int id) => await _ctx.Roles.AsNoTracking()
+    public async Task<RoleDTO> GetOne(int id) => await _ctx.Roles.AsNoTracking()
                                                                 .Where(r => r.Id == id)
+                                                                .Select(r => new RoleDTO { Id = r.Id, Name = r.Name })
                                                                 .FirstOrDefaultAsync() ?? null!;
 
     public async Task<ServiceResult<Role>> Create(CreateRoleDTO dto)
@@ -57,7 +59,7 @@ public class RoleService
     }
 
     public async Task<ServiceResult> Delete(int id)
-{
+    {
         if (!_service.isAdmin()) return ServiceResult.Unauthorized();
 
         var entity = await _ctx.Roles.FindAsync(id);
