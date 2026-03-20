@@ -33,7 +33,7 @@ public class ProjectService
                                     .ToListAsync();
     }
 
-    public async Task<ProjectDetailsDTO> GetOne(int id) => await _ctx.Projects.AsNoTracking()
+    public async Task<ProjectDetailsDTO?> GetOne(int id) => await _ctx.Projects.AsNoTracking()
                                                                     .Where(p => p.Id == id)
                                                                     .Include(pt => pt.ProjectType)
                                                                     .Include(pt => pt.Team)
@@ -44,7 +44,7 @@ public class ProjectService
                                                                         ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name },
                                                                         Team = new TeamDTO { Id = p.TeamId, Name = p.Team!.Name }
                                                                     })
-                                                                    .FirstOrDefaultAsync() ?? null!;
+                                                                    .FirstOrDefaultAsync();
 
     public async Task<ServiceResult<Project>> Create(CreateProjectDTO project)
     {

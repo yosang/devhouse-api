@@ -23,10 +23,10 @@ public class RoleService
                                 .ToListAsync();
     }
 
-    public async Task<RoleDTO> GetOne(int id) => await _ctx.Roles.AsNoTracking()
+    public async Task<RoleDTO?> GetOne(int id) => await _ctx.Roles.AsNoTracking()
                                                                 .Where(r => r.Id == id)
                                                                 .Select(r => new RoleDTO { Id = r.Id, Name = r.Name })
-                                                                .FirstOrDefaultAsync() ?? null!;
+                                                                .FirstOrDefaultAsync();
 
     public async Task<ServiceResult<Role>> Create(CreateRoleDTO dto)
     {

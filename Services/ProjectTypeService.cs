@@ -49,7 +49,7 @@ public class ProjectTypeService
     }
 
     // ! Replace object with DTO
-    public async Task<ProjectTypesDetailsDTO> GetOne(int id)
+    public async Task<ProjectTypesDetailsDTO?> GetOne(int id)
         => await _ctx.ProjectTypes.AsNoTracking()
                                     .Where(pt => pt.Id == id)
                                     .Include(pt => pt.Projects)
@@ -75,7 +75,7 @@ public class ProjectTypeService
                                              }
                                          }).ToArray()
                                      })
-                                    .FirstOrDefaultAsync() ?? null!;
+                                    .FirstOrDefaultAsync();
 
     public async Task<ServiceResult<ProjectType>> Create(CreateProjectTypeDTO dto)
     {

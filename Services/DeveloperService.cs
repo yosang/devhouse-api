@@ -38,7 +38,7 @@ public class DeveloperService
                                     .ToListAsync();
     }
 
-    public async Task<DeveloperDetailsDTO> GetOne(int id)
+    public async Task<DeveloperDetailsDTO?> GetOne(int id)
         => await _ctx.Developers.AsNoTracking()
                                 .Where(d => d.Id == id)
                                 .Include(d => d.Team)
@@ -56,7 +56,7 @@ public class DeveloperService
                                         ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
                                     })
                                 })
-                                .FirstOrDefaultAsync() ?? null!;
+                                .FirstOrDefaultAsync();
 
     public async Task<ServiceResult<Developer>> Create(CreateDeveloperDTO developer)
     {

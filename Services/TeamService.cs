@@ -10,6 +10,7 @@ public class TeamService
 {
     public DatabaseContext _ctx { get; set; }
     public AuthService _service { get; set; }
+
     public TeamService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<IEnumerable<TeamDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
@@ -30,7 +31,11 @@ public class TeamService
                                     {
                                         Id = p.Id,
                                         Name = p.Name,
-                                        ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
+                                        ProjectType = new ProjectTypesDTO
+                                        {
+                                            Id = p.ProjectTypeId,
+                                            Name = p.ProjectType!.Name
+                                        }
                                     }),
                                     Developers = t.Developers!.Select(d => new DeveloperDTO
                                     {
@@ -43,7 +48,7 @@ public class TeamService
                                 .ToListAsync();
     }
 
-    public async Task<TeamDetailsDTO> GetOne(int id) => await _ctx.Teams.AsNoTracking()
+    public async Task<TeamDetailsDTO?> GetOne(int id) => await _ctx.Teams.AsNoTracking()
                                                             .Where(t => t.Id == id)
                                                             .Include(p => p.Projects)
                                                             .Include(d => d.Developers)
@@ -55,7 +60,11 @@ public class TeamService
                                                                 {
                                                                     Id = p.Id,
                                                                     Name = p.Name,
-                                                                    ProjectType = new ProjectTypesDTO { Id = p.ProjectTypeId, Name = p.ProjectType!.Name }
+                                                                    ProjectType = new ProjectTypesDTO
+                                                                    {
+                                                                        Id = p.ProjectTypeId,
+                                                                        Name = p.ProjectType!.Name
+                                                                    }
                                                                 }),
                                                                 Developers = t.Developers!.Select(d => new DeveloperDTO
                                                                 {
@@ -65,7 +74,7 @@ public class TeamService
                                                                     Role = new RoleDTO { Id = d.RoleId, Name = d.Role!.Name }
                                                                 })
                                                             })
-                                                            .FirstOrDefaultAsync() ?? null!;
+                                                            .FirstOrDefaultAsync();
 
     public async Task<ServiceResult<Team>> Create(CreateTeamDTO dto)
     {
