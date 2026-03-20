@@ -75,7 +75,7 @@ public class AuthService
     }
 
     // This method instantly checks if the roleId from the token matches with the Admin enum
-    // We are using this to prevent teamleads, who some permissions from altering certain properties, like RoleId and TeamId (admin protected)
+    // We are using this to prevent teamleads from altering certain properties, like RoleId and TeamId (admin protected)
     public bool isAdmin() => (RolesENUM)GetClaims.roleId == RolesENUM.Admin;
 
     public enum RolesENUM
