@@ -39,6 +39,14 @@ public class RolesController : ControllerBase
     }
 
     /// <summary>Create a new role</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "name": "Developer",
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="role"></param>
     /// <response code="201">Resource created</response>
     /// <response code="403">Missing required permissions</response>
@@ -55,6 +63,15 @@ public class RolesController : ControllerBase
     }
 
     /// <summary>Update a role</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "id": 1,
+    ///         "name": "Developer",
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="id"></param>
     /// <param name="role"></param>
     /// <response code="204">Update successful, no content returned</response>

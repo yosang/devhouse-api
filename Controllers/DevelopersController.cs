@@ -40,6 +40,19 @@ public class DevelopersController : ControllerBase
 
 
     /// <summary>Create a new developer</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "firstName": "John",
+    ///         "lastName": "Doe",
+    ///         "email": "john.doe@example.com",
+    ///         "password": "password1234!",
+    ///         "teamId": 1,
+    ///         "roleId": 1
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="developer"></param>
     /// <response code="201">Resource created</response>
     /// <response code="403">Missing required permissions</response>
@@ -56,6 +69,20 @@ public class DevelopersController : ControllerBase
     }
 
     /// <summary>Update a developer</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "id": 1,
+    ///         "firstName": "John",
+    ///         "lastName": "Doe",
+    ///         "email": "john.doe@example.com",
+    ///         "password": "password1234!",
+    ///         "teamId": 1,
+    ///         "roleId": 1
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="id"></param>
     /// <param name="developer"></param>
     /// <response code="204">Update successful, no content returned</response>

@@ -40,6 +40,14 @@ public class ProjectTypesController : ControllerBase
     }
 
     /// <summary>Create a new project type</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "name": "API",
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="pt"></param>
     /// <response code="201">Resource created</response>
     /// <response code="403">Missing required permissions</response>
@@ -56,6 +64,15 @@ public class ProjectTypesController : ControllerBase
     }
 
     /// <summary>Update a project type</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "id": 1,
+    ///         "name": "API",
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="id"></param>
     /// <param name="projecttype"></param>
     /// <response code="204">Update successful, no content returned</response>

@@ -39,6 +39,16 @@ public class ProjectsController : ControllerBase
     }
 
     /// <summary>Create a new project</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "name": "Web Application",
+    ///         "projectTypeId": 1,
+    ///         "teamId": 1,
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="project"></param>
     /// <response code="201">Resource created</response>
     /// <response code="403">Missing required permissions</response>
@@ -56,6 +66,17 @@ public class ProjectsController : ControllerBase
     }
 
     /// <summary>Update a project</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "id": 1,
+    ///         "name": "Web Application",
+    ///         "projectTypeId": 1,
+    ///         "teamId": 1,
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="id"></param>
     /// <param name="project"></param>
     /// <response code="204">Update successful, no content returned</response>

@@ -39,6 +39,14 @@ public class TeamsController : ControllerBase
     }
 
     /// <summary>Create a new team</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "name": "Team Web app",
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="team"></param>
     /// <response code="201">Resource created</response>
     /// <response code="403">Missing required permissions</response>
@@ -55,6 +63,15 @@ public class TeamsController : ControllerBase
     }
 
     /// <summary>Update a team</summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "id": 1,
+    ///         "name": "Team Web app",
+    ///     }
+    ///
+    /// </remarks>
     /// <param name="id"></param>
     /// <param name="team"></param>
     /// <response code="204">Update successful, no content returned</response>
