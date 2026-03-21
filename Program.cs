@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDatabaseConfig(builder.Configuration)
                 .AddSwaggerConfig()
                 .AddJwtConfig(builder.Configuration)
-                .AddCorsConfig()
+                .AddCorsConfig(builder.Configuration)
                 .AddServices()
                 .AddControllers();
 

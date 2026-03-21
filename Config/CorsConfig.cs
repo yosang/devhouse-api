@@ -1,6 +1,5 @@
 namespace devhouse.Extensions;
 
-
 public static class CorsConfig
 {
     const string DEVELOPMENT = "Development";
@@ -8,9 +7,12 @@ public static class CorsConfig
 
     /// <summary>Configures CORS policies for development and production environments</summary>
     /// <param name="service"></param>
+    /// <param name="configuration"></param>
     /// <returns>Microsoft.Extensions.DependencyInjection.IServiceCollection</returns>
-    public static IServiceCollection AddCorsConfig(this IServiceCollection service)
+    public static IServiceCollection AddCorsConfig(this IServiceCollection service, IConfiguration configuration)
     {
+        var origins = configuration.GetSection("AllowedOrigins").Get<string[]>() ?? new string[] { "https://myfrontend.com", "https://admin.myfrontend.com" };
+
         service.AddCors(options =>
         {
             options.AddPolicy(DEVELOPMENT, policy =>
@@ -24,10 +26,7 @@ public static class CorsConfig
             {
                 policy.AllowAnyMethod()
                      .AllowAnyHeader()
-                     .WithOrigins( // These values should be in appsettings.json, for simplicity during setup we leave it hardcoded.
-                         "https://myfrontend.com",
-                         "https://admin.myfrontend.com"
-                     );
+                     .WithOrigins(origins);
             });
         });
 
