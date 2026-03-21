@@ -8,11 +8,11 @@ public static class JwtConfig
 {
     /// <summary>Adds JWT configurations to the DI container as a singleton using settings from appsettings.json</summary>
     /// <param name="service"></param>
-    /// <param name="options"></param>
+    /// <param name="configuration"></param>
     /// <returns>Microsoft.Extensions.DependencyInjection.IServiceCollection</returns>
-    public static IServiceCollection AddJwtConfig(this IServiceCollection service, IConfiguration options)
+    public static IServiceCollection AddJwtConfig(this IServiceCollection service, IConfiguration configuration)
     {
-        var jwtSettings = options.GetRequiredSection("JwtSettings").Get<JwtSettings>()!;
+        var jwtSettings = configuration.GetRequiredSection("JwtSettings").Get<JwtSettings>()!;
 
         service.AddSingleton(jwtSettings)
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
