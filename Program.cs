@@ -26,5 +26,4 @@ app.UseSwaggerConfig()
     .UseAuthConfig()
     .MapControllers();
 
-
 app.Run();
