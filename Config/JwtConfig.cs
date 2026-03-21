@@ -12,7 +12,7 @@ public static class JwtConfig
     /// <returns>Microsoft.Extensions.DependencyInjection.IServiceCollection</returns>
     public static IServiceCollection AddJwtConfig(this IServiceCollection service, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetRequiredSection("JwtSettings").Get<JwtSettings>()!;
+        var jwtSettings = configuration.GetRequiredSection("JwtSettings").Get<JwtSettings>()!; // GetRequiredSection will throw if JwtSettings is missing
 
         service.AddSingleton(jwtSettings)
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
