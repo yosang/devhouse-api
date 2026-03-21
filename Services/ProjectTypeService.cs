@@ -30,7 +30,7 @@ public class ProjectTypeService
                                             {
                                                 Id = p.Id,
                                                 Name = p.Name,
-                                                Team = new TeamDTO
+                                                Team = new TeamWithDevelopersDTO
                                                 {
                                                     Id = p.Team!.Id,
                                                     Name = p.Team.Name,
@@ -62,7 +62,7 @@ public class ProjectTypeService
                                          {
                                              Id = p.Id,
                                              Name = p.Name,
-                                             Team = new TeamDTO
+                                             Team = new TeamWithDevelopersDTO
                                              {
                                                  Id = p.Team!.Id,
                                                  Name = p.Team.Name,

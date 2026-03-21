@@ -18,5 +18,5 @@ public class ProjectForProjectTypesDTO
 {
     public int Id { get; set; }
     public string? Name { get; set; }
-    public TeamDTO? Team { get; set; }
+    public TeamWithDevelopersDTO? Team { get; set; }
 }
