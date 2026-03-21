@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace devhouse.Services;
 
+/// <summary>Provides static methods that return ProblemDetails</summary>
 public class ProblemResult
 {
-    /// <summary>Creates an instance of ProblemDetails describing a mismatch in input id's</summary>
+    /// <summary>Describes a mismatch in input id's</summary>
     /// <param name="param"></param>
     /// <param name="targetId"></param>
     /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
@@ -17,7 +18,7 @@ public class ProblemResult
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-400-bad-request"
         };
 
-    /// <summary>Creates an instance of ProblemDetails describing a failure in finding provided search value</summary>
+    /// <summary>Describes a result of no match with provided search value</summary>
     /// <param name="value"></param>
     /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
     public static ProblemDetails NoMatch(int value)
@@ -29,7 +30,7 @@ public class ProblemResult
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-404-not-found"
         };
 
-    /// <summary>Creates an instance of ProblemDetails describing an attempt of an unauthorized operation</summary>
+    /// <summary>Describes an attempt of an unauthorized operation</summary>
     /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
     public static ProblemDetails NoPermissions()
         => new ProblemDetails
@@ -40,7 +41,7 @@ public class ProblemResult
             Type = "https://datatracker.ietf.org/doc/html/rfc9110#name-403-forbidden"
         };
 
-    /// <summary>Creates an instance of ProblemDetails describing an attempt of an unauthenticated operation</summary>
+    /// <summary>Describes an attempt of an unauthenticated operation</summary>
     /// <returns>class Microsoft.AspNetCore.Mvc.ProblemDetails</returns>
     public static ProblemDetails InvalidCredentials()
         => new ProblemDetails

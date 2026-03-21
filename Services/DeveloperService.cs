@@ -7,16 +7,21 @@ namespace devhouse.Services;
 
 public class DeveloperService
 {
+    /// <summary>DbContext</summary>
     public DatabaseContext _ctx { get; set; }
+
+    /// <summary>AuthService</summary>
     public AuthService _service { get; set; }
 
+    // Injects DbContext and AuthService
     public DeveloperService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<IEnumerable<DeveloperDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
     {
+        // Normalizes pagination: page cannot be below 1 and pageSize is capped at 100
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);
 
-        return await _ctx.Developers.AsNoTracking()
+        return await _ctx.Developers.AsNoTracking() // For read operations, we dont need to track entities, this saves performance
                                     .OrderBy(e => e.Id)
                                     .Include(e => e.Team)
                                     .Skip((page - 1) * pageSize)

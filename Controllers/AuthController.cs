@@ -9,6 +9,7 @@ public class AuthController : ControllerBase
 {
     public AuthService _service { get; set; }
 
+    // Injects AuthService
     public AuthController(AuthService service) => _service = service;
 
     /// <summary>Login for a JWT token</summary>

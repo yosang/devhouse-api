@@ -1,14 +1,20 @@
 using devhouse.Context;
 using devhouse.DTOs;
 using devhouse.Models;
-using devhouse.Services;
 using Microsoft.EntityFrameworkCore;
+
+namespace devhouse.Services;
 
 public class RoleService
 {
+
+    /// <summary>DbContext</summary>
     public DatabaseContext _ctx { get; set; }
+
+    /// <summary>AuthService</summary>    
     public AuthService _service { get; set; }
 
+    // Injects DbContext and AuthService
     public RoleService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<List<RoleDTO>> GetAll(int page = 1, int pageSize = 5)

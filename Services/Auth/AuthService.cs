@@ -8,13 +8,19 @@ namespace devhouse.Services;
 
 public class AuthService
 {
+
+    /// <summary>DbContext</summary>
     public DatabaseContext _ctx { get; set; }
+
+    /// <summary>TokenService</summary>    
     public TokenService _ts { get; set; }
 
-    // DI constructor
+    public PasswordHasher<object> hasher { get; set; } = new();
+
+    // Injects DbContext and TokenService
     public AuthService(DatabaseContext context, TokenService tokenService) => (_ctx, _ts) = (context, tokenService);
 
-    /// <summary>Retrieves clams from a token</summary>
+    /// <summary>Retrieves claims from a token using IHttpContextAccessor</summary>
     TokenClaimsDTO GetClaims => new TokenClaimsDTO { roleName = _ts.GetRoleName(), developerId = _ts.GetId(), roleId = _ts.GetRoleId(), teamId = _ts.GetTeamId() };
 
     /// <summary>Attempts to authenticate a user by email and password, returns a token on successful authentication</summary>
@@ -38,10 +44,14 @@ public class AuthService
         return ServiceResult<TokenDTO>.InvalidCredentials();
     }
 
-    // Takes a developer entity and checks it up against the token claims
-    // If it is an admin, return early with true, as Admins can modify everything
-    // If its a teamlead check that both teamId and entity teamId match, TeamLeads can only modify developers from within their teams
-    // If its a developer check the developer id, developers can only modify themselves
+    /// <summary>
+    /// <para>Verifies wether an authenticated user can perform a specific operation on target entity:</para>
+    /// <para>- Admins can create, update and delete all records</para>
+    /// <para>- TeamLeads can only create, update and delete within their teams and below their role</para>
+    /// <para>- Developers can only modify their own data</para>
+    /// </summary>
+    /// <param name="developer"></param>
+    /// <returns>Boolean</returns>
     public bool CanCreateDeleteDevelopers(Developer developer)
     {
         var claims = GetClaims;

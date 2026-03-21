@@ -11,6 +11,7 @@ public class DevelopersController : ControllerBase
 {
     public DeveloperService _service { get; set; }
 
+    // Injects DeveloperService
     public DevelopersController(DeveloperService service) => _service = service;
 
     /// <summary> Retrieve a list of developers </summary>
@@ -22,7 +23,7 @@ public class DevelopersController : ControllerBase
     public async Task<ActionResult<IEnumerable<DeveloperDetailsDTO>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 5)
-        => Ok(await _service.GetAll(page, pageSize)); // When we are not returning an ASP.NET Core entity like Developer, but a DTO, we must explicitly wrap it
+        => Ok(await _service.GetAll(page, pageSize));
 
     /// <summary> Retrieve a single developer </summary>
     /// <param name="id"></param>
@@ -37,7 +38,6 @@ public class DevelopersController : ControllerBase
         if (dev == null) return NotFound(ProblemResult.NoMatch(id));
         return dev;
     }
-
 
     /// <summary>Create a new developer</summary>
     /// <remarks>

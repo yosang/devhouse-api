@@ -7,10 +7,13 @@ namespace devhouse.Services;
 
 public class ProjectService
 {
+    /// <summary>DbContext</summary>
     public DatabaseContext _ctx;
 
+    /// <summary>AuthService</summary>
     public AuthService _service { get; set; }
 
+    // Injects DbContext and AuthService
     public ProjectService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
     public async Task<IEnumerable<ProjectDetailsDTO>> GetAll(int page = 1, int pageSize = 5)

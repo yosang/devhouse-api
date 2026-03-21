@@ -11,6 +11,7 @@ public class ProjectsController : ControllerBase
 {
     public ProjectService _service { get; set; }
 
+    // Injets ProjectService
     public ProjectsController(ProjectService service) => _service = service;
 
     /// <summary> Retrieve a list of projects </summary>

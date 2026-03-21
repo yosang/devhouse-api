@@ -11,6 +11,7 @@ public class TeamsController : ControllerBase
 {
     public TeamService _service { get; set; }
 
+    // Injects TeamService
     public TeamsController(TeamService service) => _service = service;
 
     /// <summary> Retrieve a list of teams </summary>

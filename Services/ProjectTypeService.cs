@@ -9,9 +9,10 @@ public class ProjectTypeService
 {
     public DatabaseContext _ctx { get; set; }
     public AuthService _service { get; set; }
+
+    // Injects DbContext and AuthService
     public ProjectTypeService(DatabaseContext context, AuthService service) => (_ctx, _service) = (context, service);
 
-    // ! Replace object with DTO
     public async Task<IEnumerable<ProjectTypesDetailsDTO>> GetAll(int page = 1, int pageSize = 5)
     {
         page = Math.Max(page, 1); pageSize = Math.Clamp(pageSize, 1, 100);

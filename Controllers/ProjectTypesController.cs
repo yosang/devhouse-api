@@ -11,6 +11,7 @@ public class ProjectTypesController : ControllerBase
 {
     public ProjectTypeService _service { get; set; }
 
+    // Injects ProjectTypeService
     public ProjectTypesController(ProjectTypeService service) => _service = service;
 
     /// <summary> Retrieve a list of project types </summary>

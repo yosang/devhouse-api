@@ -11,6 +11,7 @@ public class RolesController : ControllerBase
 {
     public RoleService _service { get; set; }
 
+    // Injects RoleService
     public RolesController(RoleService service) => _service = service;
 
     /// <summary> Retrieve a list of roles </summary>
