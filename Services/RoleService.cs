@@ -44,9 +44,22 @@ public class RoleService
         if (!_service.isAdmin()) return ServiceResult<Role>.Unauthorized();
 
         _ctx.Roles.Add(role);
-        await _ctx.SaveChangesAsync();
 
-        return ServiceResult<Role>.WithData(role);
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult<Role>.WithData(role);
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Update(int id, UpdateRoleDTO role)
@@ -60,8 +73,21 @@ public class RoleService
 
         entity.Name = role.Name;
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Delete(int id)
@@ -73,7 +99,20 @@ public class RoleService
 
         _ctx.Remove(entity);
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 }

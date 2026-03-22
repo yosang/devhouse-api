@@ -80,8 +80,22 @@ public class DeveloperService
 
         _ctx.Developers.Add(dev);
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult<Developer>.WithData(dev);
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult<Developer>.WithData(dev);
+
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Update(int id, UpdateDeveloperDTO developer)
@@ -104,8 +118,21 @@ public class DeveloperService
             entity.TeamId = developer.TeamId;
         }
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Delete(int id)
@@ -117,8 +144,22 @@ public class DeveloperService
 
         _ctx.Remove(developer);
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
 }

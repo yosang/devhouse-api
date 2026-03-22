@@ -90,9 +90,22 @@ public class TeamService
         if (!_service.isAdmin()) return ServiceResult<Team>.Unauthorized();
 
         _ctx.Teams.Add(team);
-        await _ctx.SaveChangesAsync();
 
-        return ServiceResult<Team>.WithData(team);
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult<Team>.WithData(team);
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Update(int id, UpdateTeamDTO team)
@@ -106,8 +119,21 @@ public class TeamService
 
         entity.Name = team.Name;
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Delete(int id)
@@ -119,7 +145,20 @@ public class TeamService
 
         _ctx.Remove(entity);
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 }

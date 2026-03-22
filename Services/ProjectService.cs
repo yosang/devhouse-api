@@ -61,9 +61,23 @@ public class ProjectService
         if (!_service.CanCreateModifyDeleteProjects(proj)) return ServiceResult<Project>.Unauthorized();
 
         _ctx.Projects.Add(proj);
-        await _ctx.SaveChangesAsync();
 
-        return ServiceResult<Project>.WithData(proj);
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult<Project>.WithData(proj);
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
+
     }
 
     public async Task<ServiceResult> Update(int id, Project project)
@@ -83,9 +97,21 @@ public class ProjectService
             entity.TeamId = project.TeamId;
         }
 
-        await _ctx.SaveChangesAsync();
-
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 
     public async Task<ServiceResult> Delete(int id)
@@ -97,7 +123,20 @@ public class ProjectService
 
         _ctx.Remove(entity);
 
-        await _ctx.SaveChangesAsync();
-        return ServiceResult.Success();
+        try
+        {
+            await _ctx.SaveChangesAsync();
+            return ServiceResult.Success();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Database operation failed: " + ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Something went wrong: " + ex.Message);
+            throw;
+        }
     }
 }
