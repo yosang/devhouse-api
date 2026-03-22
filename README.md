@@ -27,6 +27,21 @@ If you are unsure of any instructions for the course assignment, contact out to 
 ## appsettings.json
 This application relies on `appsettings.json` for configuration, this file wont be present when you clone this repo, create it with the following command: `touch appsettings.json` or manually, and follow the configuration instructions below.
 
+Example
+
+```json
+{
+  "ConnectionStrings": {
+    // ...
+  },
+  "JwtSettings":
+  {
+    // ...
+  }
+}
+
+```
+
 ## JWT Configuration
 The following entry must be present in `appsettings.json`, replace the placeholders with your actual JWT details:
 
@@ -54,14 +69,16 @@ The following entry must be present in `appsettings.json`, replace the placehold
 1. Make sure to clone the repo first with `git clone`.
 2. Move into the project directory with `cd <project>`.
 3. Create `appsettings.json`, configure `ConnectionStrings` and `JwtSettings`, see the samples above.
-3. Make sure to install the required packages with `dotnet restore`.
-4. The `Migrations` folder contains everything needed for the database including:
+4. Make sure to install the required packages with `dotnet restore`.
+5. The `Migrations` folder contains everything needed for the database including:
     - Tables and relationships configuration.
     - Seed data
-5. Before using the migrations, make sure you have the `Entity Frame Work Core` tool installed, if nof, install with `dotnet tool install --global dotnet-ef` .
-6. Synchronize and update the database with `dotnet ef database update`.
-7. Run the application with `dotnet run`.
-8. To test the available endpoints visit `/swagger`.
+6. Before using the migrations, make sure you have the `Entity Frame Work Core` tool installed, if nof, install with `dotnet tool install --global dotnet-ef` .
+7. Synchronize and update the database with `dotnet ef database update`.
+8. Run the application with one of those commands:
+    - `dotnet run` (requires https certificate, read about this in the section on `https`).
+    - `dotnet run --launch-profile http`
+9. To test the available endpoints visit `/swagger`.
 
 # Instructions to create needed Migrations
 There is no need to create Migrations manually, its already provided, run `dotnet ef database update` to sync the database.
