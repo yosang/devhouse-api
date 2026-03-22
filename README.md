@@ -53,6 +53,7 @@ The following entry must be present in `appsettings.json`, replace the placehold
 
 1. Make sure to clone the repo first with `git clone`.
 2. Move into the project directory with `cd <project>`.
+3. Create `appsettings.json`, configure `ConnectionStrings` and `JwtSettings`, see the samples above.
 3. Make sure to install the required packages with `dotnet restore`.
 4. The `Migrations` folder contains everything needed for the database including:
     - Tables and relationships configuration.
