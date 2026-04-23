@@ -73,7 +73,7 @@ There were a few areas that challenged me throughout this project and that I con
 There were a few things I realized I wanted to dive deeper on and maybe add to the roadmap:
 
 - [ ] Add input validation to prevent duplicate records.
-- [ ] Add an additional Users model to for decoupled authentication, currently authentication is implemented through the Developers model.
+- [ ] Add an additional Users model for decoupled authentication, currently authentication is implemented through the Developers model.
 - [ ] Add logging with Serilog.
 
 **What I learned**
