@@ -57,7 +57,7 @@ A backend API for managing projects, teams, developers and roles. Built with ASP
 
 
 ## Grading Feedback & Highlights
-This API was built as an academic project, being my first proper backend project built entirely on the .NET with C#, im proud that it received such good feedback:
+This API was built as an academic project, being my first proper backend project built entirely in .NET with C#, im proud that it received such good feedback:
 > "Project was set up with the correct technologies. Excellent use of dependency injection. Swagger documentation complete with required descriptions." — Grading Feedback
 
 **Challenges and Implementations**:
